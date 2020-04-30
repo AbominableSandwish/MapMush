@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-class Map
+public class Map
 {
     private int height = 20;
     private int width = 20;
@@ -22,7 +22,7 @@ class Map
                 matrix[i, j] = new Cell(i, j);
                 var rdmTmp = Random.Range(0, 100);
 
-                if (rdmTmp <= 5)
+                if (rdmTmp <= 20)
                 {
 
                     //var bite = randi()%100+0
@@ -50,14 +50,14 @@ class Map
 
         Debug.Log("++   Height: " + height.ToString() + ", Width: " + width.ToString() + "   ++");
 
-        Debug.Log(msg);
+        //Debug.Log(msg);
 
         this.matrix = matrix;
     }
 
-    public void AddObject(int x, int y, int contain)
+    public void AddObject(int x, int y, GameObject Object)
     {
-        this.matrix[x, y].contain = contain;
+        this.matrix[x, y].Object = Object;
     }
 
     public int GetHeight()

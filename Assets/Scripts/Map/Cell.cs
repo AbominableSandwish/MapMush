@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-class Cell
+public class Cell
 {
-    private Vector2 position;
-    private bool visited = false;
+    public Vector2 position;
+    public bool visited = false;
 
-    //var came_from
+    public Cell came_from;
 
     private int type; // Element (int): 0 = empty; 1 = wall; 2 = ground
     private int texture;
 
-    public int contain;
+    public GameObject Object;
 
     public Cell(int x, int y)
     {
@@ -39,14 +39,14 @@ class Cell
         return this.type;
     }
 
-    void set_contain(int contain)
+    public void GetObject(GameObject Object)
     {
 
-        this.contain = contain;
+        this.Object = Object;
     }
 
-    int get_object()
+    public GameObject GetObject()
     {
-        return this.contain;
+        return this.Object;
     }
 }
