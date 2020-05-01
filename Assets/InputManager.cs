@@ -30,5 +30,9 @@ public class InputManager : MonoBehaviour
         {
             gameManager.ChangeCellSelect(new Vector2Int(0, -1));
         }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            gameManager.Generate();
+        }
     }
 }
