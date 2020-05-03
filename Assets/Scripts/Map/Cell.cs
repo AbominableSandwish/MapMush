@@ -5,6 +5,7 @@ using UnityEngine;
 public class Cell
 {
     public Vector2 position;
+    public int Level = 1;
     public bool visited = false;
 
     public Cell came_from;
@@ -17,6 +18,11 @@ public class Cell
     public Cell(int x, int y)
     {
         this.position = new Vector2(x, y);
+    }
+
+    public void SetLevel(int level)
+    {
+        this.Level = level;
     }
 
     public void set_texture(int texture)

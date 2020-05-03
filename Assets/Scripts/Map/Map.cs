@@ -11,8 +11,11 @@ public class Map
     public Cell[,] matrix;
 
 
-    public void Generate(Tilemap map_view)
+    public void Generate(int height, int width,Tilemap map_view)
     {
+        this.height = height;
+        this.width = width;
+
         string msg = "";
         Cell[,] matrix = new Cell[width, height];
         for (int i = 0; i < width; i++)
@@ -22,13 +25,18 @@ public class Map
                 matrix[i, j] = new Cell(i, j);
                 var rdmTmp = Random.Range(0, 100);
 
-                if (rdmTmp <= 20)
+                if (rdmTmp <= 15)
                 {
 
                     //var bite = randi()%100+0
                     matrix[i, j].set_type(1);
 
                     matrix[i, j].set_texture(1);
+
+                    if (Random.Range(0, 100) <= 50)
+                    {
+                        matrix[i, j].SetLevel(2);
+                    }
 
                     msg += "1, ";
                 }

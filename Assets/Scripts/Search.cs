@@ -34,7 +34,6 @@ public class Search
     {
         uiMapManager = GameObject.Find("Map").GetComponent<UIMapManager>();
         map = GameObject.Find("Map").GetComponent<MapManager>().GetMap();
-        uiMapManager.Refresh();
 
         if (map.matrix[x, y].get_type() == 1)
         {
@@ -103,22 +102,20 @@ public class Search
         this.path = new List<Cell>();
         Cell cellStart = map.matrix[positionStart.x, positionStart.y];
         Cell cellTarget = map.matrix[positionTarget.x, positionTarget.y];
-
         foreach (var cell in fieldOfView)
         {
-            if (cell == cellTarget)
+            if (cell.position == cellTarget.position)
             {
                 path.Add(cell);
             }
         }
-
-        Cell tmp = path[0];
+        
         int i = 0;
-        while (tmp != cellStart)
+        while (path[path.Count - 1] != cellStart)
         {
-            tmp = path[path.Count - 1];
+            
 
-            path.Add(tmp.came_from);
+            path.Add(path[path.Count - 1].came_from);
 
             if (i >= 100)
             {
@@ -127,7 +124,6 @@ public class Search
             }
             i++;
         }
-
         path.Reverse();
 
         return path;

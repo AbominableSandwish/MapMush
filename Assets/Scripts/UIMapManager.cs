@@ -14,6 +14,7 @@ public class UIMapManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        cellsTarget = new List<Cell>();
     }
 
     void Update()

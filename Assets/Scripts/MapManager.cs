@@ -10,15 +10,23 @@ public class MapManager : MonoBehaviour
 {
     Map map;
 
+    [SerializeField] private int height = 20;
+    [SerializeField] private int width = 20;
+    [SerializeField] private int Level = 2;
+
     public TileBase tileGreen;
     public TileBase tileBrown;
+    public TileBase tileLevel2;
 
     [SerializeField] private Tilemap map_view;
+    [SerializeField] private Tilemap map_level_2;
 
     public void GenerateMap()
     {
+        map_view.ClearAllTiles();
+        map_level_2.ClearAllTiles();
         map = new Map();
-        map.Generate(map_view);      
+        map.Generate(height, width, map_view);      
     }
 
     public void Refresh()
@@ -29,8 +37,15 @@ public class MapManager : MonoBehaviour
             {
                 if (map.matrix[i, j].get_type() == 1)
                 {
-                    map_view.SetTile(new Vector3Int(i, j, 0), tileBrown);
                     
+                    if (map.matrix[i, j].Level == 2)
+                    {
+                        map_level_2.SetTile(new Vector3Int(i, j, 0), tileLevel2);
+                    }
+                    else
+                    {
+                        map_view.SetTile(new Vector3Int(i, j, 0), tileBrown);
+                    }
                 }
                 else
                 {

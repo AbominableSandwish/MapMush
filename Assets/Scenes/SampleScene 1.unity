@@ -759,6 +759,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Player: {fileID: 7023444635772566496, guid: 21ed80d6d82de02499ebb168787cc048, type: 3}
+  Player2: {fileID: 7023444635772566496, guid: a983b475385b5b04e949e045abcb19a0, type: 3}
 --- !u!4 &1107661430
 Transform:
   m_ObjectHideFlags: 0
