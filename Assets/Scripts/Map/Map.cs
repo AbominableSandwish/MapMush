@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class Map
@@ -9,7 +7,6 @@ public class Map
     private int width = 20;
 
     public Cell[,] matrix;
-
 
     public void Generate(int height, int width,Tilemap map_view)
     {
@@ -25,7 +22,7 @@ public class Map
                 matrix[i, j] = new Cell(i, j);
                 var rdmTmp = Random.Range(0, 100);
 
-                if (rdmTmp <= 15)
+                if (rdmTmp <= 8)
                 {
 
                     //var bite = randi()%100+0

@@ -10,14 +10,29 @@ public class GameManager : MonoBehaviour
     private IAManager iaManager;
 
     private Vector2Int cell_select = new Vector2Int(0, 0);
-    [SerializeField] private int nbrOfPlayer = 20;
     
-    [SerializeField] private GameObject Player;
+
 
     public Search search;
 
+    private int teamIsPlaying = 0;
 
-    [SerializeField] GameObject Player2;
+
+
+
+    public void  SetEndTurn()
+    {
+        if (teamIsPlaying == 1)
+        {
+            teamIsPlaying = 0;
+        }
+        else
+        {
+            teamIsPlaying = 1;
+        }
+
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -25,15 +40,10 @@ public class GameManager : MonoBehaviour
         uiMapManager = GameObject.Find("Map").GetComponent<UIMapManager>();
         iaManager = GameObject.Find("IAManager").GetComponent<IAManager>();
         Generate();
+        teamIsPlaying = 1;
     }
 
-    private Vector2 convertTileCoordInScreenCoord(int tileCoordX, int tileCoordY)
-    {
-        Vector2 screenCoord;
-        screenCoord.x = (float)(-0.25f + ((tileCoordX - tileCoordY) * 0.5f));
-        screenCoord.y = (float)(-4.80f + ((tileCoordX + tileCoordY) * (0.5f / 2)));
-        return screenCoord;
-    }
+
 
     public void Generate()
     {
@@ -42,41 +52,7 @@ public class GameManager : MonoBehaviour
         mapManager.GenerateMap();
         mapManager.Refresh();
 
-        int counter = 0;
-        while (counter < nbrOfPlayer )
-        {
-   
-            int i, j;
-            if (counter < nbrOfPlayer / 2)
-            {
-                i = Random.Range(0, mapManager.GetMap().GetWidth()/2);
-                j = Random.Range(0, mapManager.GetMap().GetHeight());
-            }
-            else
-            {
-                i = Random.Range(0, mapManager.GetMap().GetWidth()/2) + mapManager.GetMap().GetWidth() / 2;
-                j = Random.Range(0, mapManager.GetMap().GetHeight());
-            }
-           
-            if (mapManager.GetMap().matrix[i, j].get_type() != 1)
-            {
-             
-                GameObject player;
-                if (counter < nbrOfPlayer/2){
-                    player = GameObject.Instantiate(Player);
-                }else
-                {
-                    player = GameObject.Instantiate(Player2);
-                }
-                player.GetComponent<IAController>().SetPosition(new Vector2Int(i, j));
-                player.transform.position = convertTileCoordInScreenCoord(i, j);
-                //player.transform.position = new Vector3(-5 + 0.5f * i, -5 + 0.5f * j);
-                mapManager.GetMap().AddObject(i, j, player);
-                iaManager.AddIA(player.GetComponent<IAController>());
-                counter++;
-
-            }
-        }
+        iaManager.InstancePlayer(mapManager);
         //StartCoroutine(Search(0.2f));
         //SetCellSelect();
     }

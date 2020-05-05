@@ -15,6 +15,8 @@ public class Cell
 
     public GameObject Object;
 
+    public float hauteur = 0.0f;
+
     public Cell(int x, int y)
     {
         this.position = new Vector2(x, y);
