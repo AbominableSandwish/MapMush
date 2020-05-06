@@ -35,10 +35,10 @@ public class Search
         uiMapManager = GameObject.Find("Map").GetComponent<UIMapManager>();
         map = GameObject.Find("Map").GetComponent<MapManager>().GetMap();
 
-        if (map.matrix[x, y].get_type() == 1)
-        {
-            return null;
-        }
+        //if (map.matrix[x, y].get_type() == 1)
+        //{
+        //    return null;
+        //}
 
         for (int i = 0; i < map.GetWidth(); i++)
         {
@@ -71,7 +71,7 @@ public class Search
     public void BFS_search(int x, int y, Cell parent, int field)
     {
         if ((x >= 0 && x <= map.GetWidth() - 1) && (y >= 0 && y <= map.GetHeight() - 1)){
-            if (map.matrix[x,y].get_type() >= 2)
+            if (map.matrix[x,y].get_type() >= 1)
             {
                 if (map.matrix[x, y].visited == false)
                 {

@@ -58,7 +58,7 @@ public class MapManager : MonoBehaviour
                         Vector2 positionCell = convertTileCoordInScreenCoord(i, j);
                         Vector3 positionMap = new Vector3(positionCell.x, positionCell.y, 0);
                         var cell = Instantiate(prefabCell, this.transform);
-                        cell.transform.position = positionMap;
+                        cell.transform.position = positionMap + new Vector3(0, map.matrix[i, j].hauteur); ;
                         cell.GetComponent<SpriteRenderer>().sprite = tileRock;
                         cell.GetComponent<SpriteRenderer>().sortingOrder =
                             ((map.GetHeight() - j) + (map.GetWidth() - i)) * 2;
@@ -69,11 +69,11 @@ public class MapManager : MonoBehaviour
                         Vector2 positionCell = convertTileCoordInScreenCoord(i, j);
                         Vector3 positionMap = new Vector3(positionCell.x, positionCell.y, 0);
                         var cell = Instantiate(prefabCell, this.transform);
-                        cell.transform.position = positionMap;
+                        cell.transform.position = positionMap + new Vector3(0, map.matrix[i,j].hauteur);
                         cell.GetComponent<SpriteRenderer>().sprite = tileRock;
                         cell.GetComponent<SpriteRenderer>().sortingOrder =
                             ((map.GetHeight() - j) + (map.GetWidth() - i)) * 2;
-                        cell.GetComponent<HauteurScript>().SetFly();
+                       // cell.GetComponent<HauteurScript>().SetFly();
                         //map_view.SetTile(new Vector3Int(i, j, 0), tileBrown);
                     }
                 }
@@ -83,7 +83,7 @@ public class MapManager : MonoBehaviour
                     Vector2 positionCell = convertTileCoordInScreenCoord(i, j);
                     Vector3 positionMap = new Vector3(positionCell.x, positionCell.y, 0);
                     var cell = Instantiate(prefabCell, this.transform);
-                    cell.transform.position = positionMap;
+                    cell.transform.position = positionMap + new Vector3(0, map.matrix[i, j].hauteur); ;
                     cell.GetComponent<SpriteRenderer>().sortingOrder = ((map.GetHeight() - j) + (map.GetWidth() - i))*2;
 
                 }
