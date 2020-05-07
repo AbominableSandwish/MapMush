@@ -4,7 +4,9 @@ using System.Numerics;
 using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
 using Quaternion = UnityEngine.Quaternion;
+using Slider = UnityEngine.UI.Slider;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 
@@ -14,18 +16,20 @@ public class MapManager : MonoBehaviour
 
     [SerializeField] private int height = 20;
     [SerializeField] private int width = 20;
-    [SerializeField] private int Level = 2;
 
-    public TileBase tileGreen;
-    public TileBase tileBrown;
-    public TileBase tileLevel2;
+    [SerializeField] private int noise;
+    [SerializeField] private float offset_Z;
+
 
     [SerializeField] private Tilemap map_view;
     [SerializeField] private Tilemap map_level_2;
 
     [SerializeField] private GameObject prefabCell;
 
-    [SerializeField] private Sprite tileRock;
+    [SerializeField] private Sprite tile_Water;
+    [SerializeField] private Sprite tile_Dirt;
+    [SerializeField] private Sprite tile_Rock;
+    [SerializeField] private Sprite tile_HightRock;
 
 
     public void GenerateMap()
@@ -33,7 +37,7 @@ public class MapManager : MonoBehaviour
         map_view.ClearAllTiles();
         map_level_2.ClearAllTiles();
         map = new Map();
-        map.Generate(height, width, map_view);      
+        map.Generate(height, width, map_view, offset_Z, noise);      
     }
 
     private Vector2 convertTileCoordInScreenCoord(int tileCoordX, int tileCoordY)
@@ -44,49 +48,52 @@ public class MapManager : MonoBehaviour
         return screenCoord;
     }
 
+    private List<GameObject> objects;
+
     public void Refresh()
     {
+        if (objects != null)
+        {
+            foreach (var cell in objects)
+            {
+                Destroy(cell);
+            }
+        }
+
+        objects = new List<GameObject>();
+        
         for (int i = 0; i < map.GetWidth(); i++)
         {
             for (int j = 0; j < map.GetWidth(); j++)
             {
+
+                Vector2 positionCell = convertTileCoordInScreenCoord(i, j);
+                Vector3 positionMap = new Vector3(positionCell.x, positionCell.y, 0);
+                var cell = Instantiate(prefabCell, this.transform);
+                cell.transform.position = positionMap + new Vector3(0, map.matrix[i, j].position.z); ;
+
+                if (map.matrix[i, j].get_type() == 0)
+                {
+                    cell.GetComponent<SpriteRenderer>().sprite = tile_Water;
+                }
+
                 if (map.matrix[i, j].get_type() == 1)
                 {
-                    if (map.matrix[i, j].Level == 2)
-                    {
-                       // map_level_2.SetTile(new Vector3Int(i, j, 0), tileLevel2);
-                        Vector2 positionCell = convertTileCoordInScreenCoord(i, j);
-                        Vector3 positionMap = new Vector3(positionCell.x, positionCell.y, 0);
-                        var cell = Instantiate(prefabCell, this.transform);
-                        cell.transform.position = positionMap + new Vector3(0, map.matrix[i, j].hauteur); ;
-                        cell.GetComponent<SpriteRenderer>().sprite = tileRock;
-                        cell.GetComponent<SpriteRenderer>().sortingOrder =
-                            ((map.GetHeight() - j) + (map.GetWidth() - i)) * 2;
-                    }
-                    else
-                    {
-                        
-                        Vector2 positionCell = convertTileCoordInScreenCoord(i, j);
-                        Vector3 positionMap = new Vector3(positionCell.x, positionCell.y, 0);
-                        var cell = Instantiate(prefabCell, this.transform);
-                        cell.transform.position = positionMap + new Vector3(0, map.matrix[i,j].hauteur);
-                        cell.GetComponent<SpriteRenderer>().sprite = tileRock;
-                        cell.GetComponent<SpriteRenderer>().sortingOrder =
-                            ((map.GetHeight() - j) + (map.GetWidth() - i)) * 2;
-                       // cell.GetComponent<HauteurScript>().SetFly();
-                        //map_view.SetTile(new Vector3Int(i, j, 0), tileBrown);
-                    }
+                    cell.GetComponent<SpriteRenderer>().sprite = tile_Dirt;
                 }
-                else
+                
+                if(map.matrix[i, j].get_type() == 2)
                 {
-                   // map_level_2.SetTile(new Vector3Int(i, j, 0), tileLevel2);
-                    Vector2 positionCell = convertTileCoordInScreenCoord(i, j);
-                    Vector3 positionMap = new Vector3(positionCell.x, positionCell.y, 0);
-                    var cell = Instantiate(prefabCell, this.transform);
-                    cell.transform.position = positionMap + new Vector3(0, map.matrix[i, j].hauteur); ;
-                    cell.GetComponent<SpriteRenderer>().sortingOrder = ((map.GetHeight() - j) + (map.GetWidth() - i))*2;
-
+                    cell.GetComponent<SpriteRenderer>().sprite = tile_Rock;
                 }
+
+                if (map.matrix[i, j].get_type() == 3)
+                { 
+                    cell.GetComponent<SpriteRenderer>().sprite = tile_HightRock;
+                }
+
+                cell.GetComponent<SpriteRenderer>().sortingOrder = ((map.GetHeight() - j) + (map.GetWidth() - i)) * 2;
+                objects.Add(cell);
             }
         }
     }

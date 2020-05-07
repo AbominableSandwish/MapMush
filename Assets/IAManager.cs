@@ -74,7 +74,7 @@ public class IAManager : MonoBehaviour
                 j = Random.Range(0, mapManager.GetMap().GetHeight());
             }
 
-            if (mapManager.GetMap().matrix[i, j].get_type() != 1)
+            if (mapManager.GetMap().matrix[i, j].get_type() != 0)
             {
 
                 GameObject player;
@@ -87,7 +87,9 @@ public class IAManager : MonoBehaviour
                     player = GameObject.Instantiate(Player2, GameObject.Find("UnityMap").transform);
                 }
                 player.GetComponent<IAController>().SetPosition(new Vector2Int(i, j));
-                player.transform.position = convertTileCoordInScreenCoord(i, j);
+                Vector2 position = convertTileCoordInScreenCoord(i, j);
+                position.y += mapManager.GetMap().matrix[i, j].position.z;
+                player.transform.position = position;
                 //player.transform.position = new Vector3(-5 + 0.5f * i, -5 + 0.5f * j);
                 mapManager.GetMap().AddObject(i, j, player);
                 AddIA(player.GetComponent<IAController>());

@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class Cell
 {
-    public Vector2 position;
-    public int Level = 1;
+    public Vector3 position;
     public bool visited = false;
 
     public Cell came_from;
@@ -15,16 +14,9 @@ public class Cell
 
     public GameObject Object;
 
-    public float hauteur = 0.0f;
-
     public Cell(int x, int y)
     {
-        this.position = new Vector2(x, y);
-    }
-
-    public void SetLevel(int level)
-    {
-        this.Level = level;
+        this.position = new Vector3(x, y, 0);
     }
 
     public void set_texture(int texture)

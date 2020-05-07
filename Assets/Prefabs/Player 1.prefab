@@ -73,7 +73,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 10
+  m_SortingOrder: 5000
   m_Sprite: {fileID: 5056318500410537165, guid: 431ec1713b3d3344ca51072515158bca,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -150,7 +150,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808b5f3f9f9cc9045a2f53c96bc42d54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isWaiting: 1
   targetPositon: {x: 0, y: 0}
+  nextCellPosition: {x: 0, y: 0}
+  distance: 0
   nextPositon: {x: 0, y: 0}
 --- !u!1001 &7023444634943474950
 PrefabInstance:
@@ -222,7 +225,7 @@ PrefabInstance:
     - target: {fileID: 964109911609375851, guid: b335d65f9ec07b942bb598e07df8a054,
         type: 3}
       propertyPath: m_SortingOrder
-      value: 10
+      value: 5000
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b335d65f9ec07b942bb598e07df8a054, type: 3}

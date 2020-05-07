@@ -408,7 +408,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 50
+  orthographic size: 20
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -432,7 +432,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 42, z: -10}
+  m_LocalPosition: {x: 0, y: 21, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1059,7 +1059,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -759.99994, y: 424}
+  m_AnchoredPosition: {x: -760, y: 424}
   m_SizeDelta: {x: -1480, y: -920}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1197307201
@@ -1143,17 +1143,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b4f48366185af2438e282618748b781, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  height: 200
-  width: 200
-  Level: 20
-  tileGreen: {fileID: 11400000, guid: 4ea29c1d8a79fd842b988c2a88184617, type: 2}
-  tileBrown: {fileID: 11400000, guid: 741dee6a48ab24947beff46933b97321, type: 2}
-  tileLevel2: {fileID: 11400000, guid: d21cafbdbf3de98448dfb3b3966adc87, type: 2}
+  height: 100
+  width: 100
+  noise: 4
+  offset_Z: -0.3
   map_view: {fileID: 265132204}
   map_level_2: {fileID: 469805969}
   prefabCell: {fileID: 5941278371581202619, guid: 59ef71a2e73dfd8428b42d8d3cd61ce2,
     type: 3}
-  tileRock: {fileID: 21300000, guid: 948f6d2ba64c1d7488c995264255acc3, type: 3}
+  tile_Water: {fileID: -5800792307412622259, guid: 44292580753d5834982e6046a3291598,
+    type: 3}
+  tile_Dirt: {fileID: 9046047427341356226, guid: 44292580753d5834982e6046a3291598,
+    type: 3}
+  tile_Rock: {fileID: 6790883718208669077, guid: 44292580753d5834982e6046a3291598,
+    type: 3}
+  tile_HightRock: {fileID: 6802858982943459310, guid: 44292580753d5834982e6046a3291598,
+    type: 3}
 --- !u!114 &1331634370
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1245,11 +1250,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff636450088260348bf8f1e0af3b28b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxInAction: 0
+  maxInAction: 20
   isReady: 0
   Player: {fileID: 7023444635772566496, guid: 21ed80d6d82de02499ebb168787cc048, type: 3}
   Player2: {fileID: 7023444635772566496, guid: a983b475385b5b04e949e045abcb19a0, type: 3}
-  nbrOfPlayer: 0
+  nbrOfPlayer: 200
 --- !u!4 &1514241449
 Transform:
   m_ObjectHideFlags: 0
