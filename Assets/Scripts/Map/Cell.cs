@@ -12,7 +12,14 @@ public class Cell
     private int type; // Element (int): 0 = empty; 1 = wall; 2 = ground
     private int texture;
 
+    public SpriteRenderer render;
+
     public GameObject Object;
+
+    public void SetSpriteRender(SpriteRenderer render)
+    {
+        this.render = render;
+    }
 
     public Cell(int x, int y)
     {

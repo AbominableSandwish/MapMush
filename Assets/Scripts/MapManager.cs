@@ -70,7 +70,8 @@ public class MapManager : MonoBehaviour
                 Vector2 positionCell = convertTileCoordInScreenCoord(i, j);
                 Vector3 positionMap = new Vector3(positionCell.x, positionCell.y, 0);
                 var cell = Instantiate(prefabCell, this.transform);
-                cell.transform.position = positionMap + new Vector3(0, map.matrix[i, j].position.z); ;
+                cell.transform.position = positionMap + new Vector3(0, map.matrix[i, j].position.z);
+                
 
                 if (map.matrix[i, j].get_type() == 0)
                 {
@@ -91,6 +92,9 @@ public class MapManager : MonoBehaviour
                 { 
                     cell.GetComponent<SpriteRenderer>().sprite = tile_HightRock;
                 }
+
+                if (map.matrix[i, j].render == null)
+                    map.matrix[i, j].SetSpriteRender(cell.GetComponent<SpriteRenderer>());
 
                 cell.GetComponent<SpriteRenderer>().sortingOrder = ((map.GetHeight() - j) + (map.GetWidth() - i)) * 2;
                 objects.Add(cell);

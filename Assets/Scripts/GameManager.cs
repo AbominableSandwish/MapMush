@@ -53,6 +53,8 @@ public class GameManager : MonoBehaviour
         mapManager.Refresh();
 
         iaManager.InstancePlayer(mapManager);
+
+        Camera.main.gameObject.GetComponent<CameraManager>().RestartCamera();
         //StartCoroutine(Search(0.2f));
         //SetCellSelect();
     }
