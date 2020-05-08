@@ -9,6 +9,7 @@ public class CameraManager : MonoBehaviour
     
     private Map map;
     private int max_bucket = 256;
+    private Bucket[,] buckets;
 
     public void RestartCamera()
     {
@@ -19,7 +20,7 @@ public class CameraManager : MonoBehaviour
 
     public void ShowBucket()
     {
-        Bucket[,] buckets=this.hash.GetBuckets();
+        buckets=this.hash.GetBuckets();
  
         for (int x = 0; x < (int)(Mathf.Sqrt(max_bucket)); x++)
         {
@@ -42,7 +43,7 @@ public class CameraManager : MonoBehaviour
 
     public class Bucket
     {
-        public Vector2 position;
+        public Vector3 position;
         public List<Cell> cells;
 
         public bool IsVisible;
@@ -51,7 +52,19 @@ public class CameraManager : MonoBehaviour
         {
             this.cells = new List<Cell>();
             this.IsVisible = false;
+            this.position = new Vector3();
         }
+
+        public void SetVisibilty(bool isVisible)
+        {
+            this.IsVisible = isVisible;
+            foreach (var cell in cells)
+            {
+                cell.render.gameObject.SetActive(this.IsVisible);
+            }
+        }
+
+
     }
 
     class HashPartition
@@ -82,10 +95,62 @@ public class CameraManager : MonoBehaviour
 
                 }
             }
+
+            for (int x = 0; x < (int)(Mathf.Sqrt(max_bucket)); x++)
+            {
+                for (int y = 0; y < (int)(Mathf.Sqrt(max_bucket)); y++)
+                {
+                    Vector3 positionBucket= new Vector3();
+                    foreach (var cell in buckets[x, y].cells)
+                    {
+                        positionBucket += convertTileCoordInScreenCoord(cell.position);
+                    }
+
+                    positionBucket /= buckets[x, y].cells.Count;
+                    buckets[x, y].position = positionBucket;
+                }
+            }
             return this.buckets;
         }
 
-     
-   
+        public Vector3 convertTileCoordInScreenCoord(Vector3 position)
+        {
+            Vector3 screenCoord = new Vector3();
+            screenCoord.x = (float)(-0.25f + ((position.x - position.y) * 0.5f));
+            screenCoord.y = (float)(-4.80f + ((position.x + position.y) * (0.5f / 2)));
+            return screenCoord;
+        }
+
     }
+
+
+
+    void OnDrawGizmos()
+    {
+        Vector3 positionCamera = this.transform.position + new Vector3(0, 0, 10);
+        for (int x = 0; x < (int)(Mathf.Sqrt(max_bucket)); x++)
+        {
+            for (int y = 0; y < (int)(Mathf.Sqrt(max_bucket)); y++)
+            {
+
+                if (((this.buckets[x, y].position - positionCamera).magnitude <= 17.0f) &&
+                    (this.buckets[x, y].position - positionCamera).magnitude >= -17.0f)
+                {
+                    Gizmos.color = Color.green;
+                    this.buckets[x, y].SetVisibilty(true);
+                }
+                else
+                {
+                    Gizmos.color = Color.gray;
+                    this.buckets[x, y].SetVisibilty(false);
+                }
+
+                Gizmos.DrawSphere(this.buckets[x,y].position, 1.0f);
+            }
+        }
+
+        Gizmos.color = Color.black;
+        Gizmos.DrawSphere(positionCamera, 2.0f);
+    }
+  
 }

@@ -421,7 +421,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 20
+  orthographic size: 5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -1158,7 +1158,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   height: 256
   width: 256
-  noise: 4
+  noise: 12
   offset_Z: -0.3
   map_view: {fileID: 265132204}
   map_level_2: {fileID: 469805969}
