@@ -42,16 +42,20 @@ public class IAManager : MonoBehaviour
 
     public void AddIA(IAController ia)
     {
+       
         if(this.listIA == null)
             listIA = new List<IAController>();
-        this.listIA.Add(ia);
+        if(this.listIA .Count != 0)
+            this.listIA.Insert(Random.Range(0, listIA.Count-1), ia);
+        else
+            this.listIA.Add(ia);
     }
 
-    private Vector2 convertTileCoordInScreenCoord(int tileCoordX, int tileCoordY)
+    private Vector3 convertTileCoordInScreenCoord(int tileCoordX, int tileCoordY)
     {
-        Vector2 screenCoord;
-        screenCoord.x = (float)(-0.25f + ((tileCoordX - tileCoordY) * 0.5f));
-        screenCoord.y = (float)(-4.80f + ((tileCoordX + tileCoordY) * (0.5f / 2)));
+        Vector3 screenCoord = new Vector3();
+        screenCoord.x = (float)(-0.25f + ((tileCoordX - tileCoordY)));
+        screenCoord.y = (float)(-4.80f + ((tileCoordX + tileCoordY) * (0.5f)));
         return screenCoord;
     }
 
@@ -76,24 +80,28 @@ public class IAManager : MonoBehaviour
 
             if (mapManager.GetMap().matrix[i, j].get_type() != 0)
             {
+                if (mapManager.GetMap().matrix[i, j].Object == null)
+                {
+                    GameObject player;
+                    if (counter < nbrOfPlayer / 2)
+                    {
+                        player = GameObject.Instantiate(Player, GameObject.Find("UnityMap").transform);
+                    }
+                    else
+                    {
+                        player = GameObject.Instantiate(Player2, GameObject.Find("UnityMap").transform);
+                    }
 
-                GameObject player;
-                if (counter < nbrOfPlayer / 2)
-                {
-                    player = GameObject.Instantiate(Player, GameObject.Find("UnityMap").transform);
+                    player.GetComponent<IAController>().SetPosition(new Vector2Int(i, j));
+                    Vector3 position = convertTileCoordInScreenCoord(i, j);
+                    position += new Vector3(0, mapManager.GetMap().matrix[i, j].position.z);
+                    player.transform.position = position;
+                    //player.transform.position = new Vector3(-5 + 0.5f * i, -5 + 0.5f * j);
+                    mapManager.GetMap().AddObject(i, j, player);
+                    AddIA(player.GetComponent<IAController>());
+
+                    counter++;
                 }
-                else
-                {
-                    player = GameObject.Instantiate(Player2, GameObject.Find("UnityMap").transform);
-                }
-                player.GetComponent<IAController>().SetPosition(new Vector2Int(i, j));
-                Vector2 position = convertTileCoordInScreenCoord(i, j);
-                position.y += mapManager.GetMap().matrix[i, j].position.z;
-                player.transform.position = position;
-                //player.transform.position = new Vector3(-5 + 0.5f * i, -5 + 0.5f * j);
-                mapManager.GetMap().AddObject(i, j, player);
-                AddIA(player.GetComponent<IAController>());
-                counter++;
             }
         }
     }

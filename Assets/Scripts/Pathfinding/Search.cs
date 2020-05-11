@@ -94,7 +94,7 @@ public class Search
     public List<Cell> Path(Vector2Int positionStart, Vector2Int positionTarget)
     {
 
-        if (map.matrix[positionTarget.x, positionTarget.y].get_type() == 1)
+        if (map.matrix[positionTarget.x, positionTarget.y].get_type() == 0)
         {
             return null;
         }

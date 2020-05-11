@@ -394,6 +394,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd8ce647d1bb8d84fab4e23c6612c194, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cameraMode: 0
+  Velocity: 1
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -418,10 +420,10 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 100
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 7
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -991,6 +993,7 @@ GameObject:
   - component: {fileID: 1107661430}
   - component: {fileID: 1107661429}
   - component: {fileID: 1107661431}
+  - component: {fileID: 1107661432}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1034,6 +1037,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 739a203ba35182d43ab71bb4c0b2fb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1107661432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1107661428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcaf36d3e4205c74e82ab59cc26eedf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1197307199
@@ -1138,7 +1153,7 @@ Transform:
   m_GameObject: {fileID: 1331634367}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1399602235}
   m_Father: {fileID: 0}
@@ -1156,10 +1171,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b4f48366185af2438e282618748b781, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  height: 256
-  width: 256
+  height: 144
+  width: 144
   noise: 12
-  offset_Z: -0.3
+  offset_Z: -5
   map_view: {fileID: 265132204}
   map_level_2: {fileID: 469805969}
   prefabCell: {fileID: 5941278371581202619, guid: 59ef71a2e73dfd8428b42d8d3cd61ce2,
@@ -1263,11 +1278,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff636450088260348bf8f1e0af3b28b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxInAction: 0
+  maxInAction: 150
   isReady: 0
   Player: {fileID: 7023444635772566496, guid: 21ed80d6d82de02499ebb168787cc048, type: 3}
   Player2: {fileID: 7023444635772566496, guid: a983b475385b5b04e949e045abcb19a0, type: 3}
-  nbrOfPlayer: 0
+  nbrOfPlayer: 1000
 --- !u!4 &1514241449
 Transform:
   m_ObjectHideFlags: 0

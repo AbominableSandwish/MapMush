@@ -43,8 +43,8 @@ public class MapManager : MonoBehaviour
     private Vector2 convertTileCoordInScreenCoord(int tileCoordX, int tileCoordY)
     {
         Vector2 screenCoord;
-        screenCoord.x = (float)(-0.25f + ((tileCoordX - tileCoordY) * 0.5f));
-        screenCoord.y = (float)(-4.80f + ((tileCoordX + tileCoordY) * (0.5f / 2)));
+        screenCoord.x = (float)(-0.25f + ((tileCoordX - tileCoordY)));
+        screenCoord.y = (float)(-4.80f + ((tileCoordX + tileCoordY) * (0.5f)));
         return screenCoord;
     }
 
@@ -68,7 +68,7 @@ public class MapManager : MonoBehaviour
             {
 
                 Vector2 positionCell = convertTileCoordInScreenCoord(i, j);
-                Vector3 positionMap = new Vector3(positionCell.x, positionCell.y, 0);
+                Vector3 positionMap = new Vector3(positionCell.x, positionCell.y, 0)+ new Vector3(0, 0);
                 var cell = Instantiate(prefabCell, this.transform);
                 cell.transform.position = positionMap + new Vector3(0, map.matrix[i, j].position.z);
                 

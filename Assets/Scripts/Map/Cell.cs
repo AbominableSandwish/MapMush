@@ -7,6 +7,7 @@ public class Cell
     public Vector3 position;
     public bool visited = false;
 
+    public bool IsVisible;
     public Cell came_from;
 
     private int type; // Element (int): 0 = empty; 1 = wall; 2 = ground
@@ -19,6 +20,14 @@ public class Cell
     public void SetSpriteRender(SpriteRenderer render)
     {
         this.render = render;
+    }
+
+    public void SetIsVisible(bool isVisible)
+    {
+        this.IsVisible = isVisible;
+       render.gameObject.SetActive(isVisible);
+        if(Object != null)
+            Object.SetActive(isVisible);
     }
 
     public Cell(int x, int y)
@@ -46,8 +55,12 @@ public class Cell
         return this.type;
     }
 
-    public void GetObject(GameObject Object)
+    public void SetObject(GameObject Object)
     {
+        if (Object != null)
+        {
+            Object.SetActive(this.IsVisible);
+        }
 
         this.Object = Object;
     }

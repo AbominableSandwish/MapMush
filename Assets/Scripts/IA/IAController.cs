@@ -36,6 +36,9 @@ public class IAController : MonoBehaviour
     public List<Cell> path;
     public Search search;
 
+    public Cell cellStart;
+    private Cell cellTarget;
+
     public Vector2 nextCellPosition;
 
     public float distance;
@@ -66,6 +69,7 @@ public class IAController : MonoBehaviour
                         {
 
                             cells = new List<Cell>();
+                            search = new Search();
                             cells = search.Research(position.x, position.y, 3);
 
                             if (cells.Count <= 2)
@@ -80,39 +84,35 @@ public class IAController : MonoBehaviour
                                 targetPositon = new Vector2Int((int)cells[index].position.x,
                                     (int)cells[index].position.y);
 
+                                path = new List<Cell>();
                                 path = search.Path(new Vector2Int(position.x, position.y), targetPositon);
                                 if (path != null)
                                 {
                                     nextPositon = convertTileCoordInScreenCoord((int)path[0].position.x, (int)path[0].position.y);
+                                    nextPositon += new Vector2(0.0f, path[0].position.z);
                                     distance = (transform.position - new Vector3(nextPositon.x, nextPositon.y))
                                         .magnitude;
                                     direction = (nextPositon - new Vector2(transform.position.x, transform.position.y)).normalized;
+                                    
                                         GetComponentInChildren<SpriteRenderer>().sortingOrder =
-                                            ((map.GetHeight() - (int)position.y) +
-                                             (map.GetWidth() - (int)position.x)) * 2 + 1;
+                                            ((map.GetHeight() - (int)position.y) + (map.GetWidth() - (int)position.x)) * 2 + 1;
                                     state = State.MOVE;
-
-
                                 }
                             }
-
-
                         }
                     }
                 }
-
                 break;
 
             case State.MOVE:
                 transform.position += new Vector3(direction.x, direction.y) * Time.deltaTime;
                 SpriteRenderer render = GetComponentInChildren<SpriteRenderer>();
 
-               
-
-
-                if (transform.position.magnitude - nextPositon.magnitude <= .005f &&
-                    nextPositon.magnitude - transform.position.magnitude <= .005f)
+                if (transform.position.magnitude - nextPositon.magnitude <= .01f &&
+                    nextPositon.magnitude - transform.position.magnitude <= .01f)
                 {
+
+                    
 
                     render.sortingOrder =
                         ((map.GetHeight() - (int)position.y) +
@@ -138,13 +138,16 @@ public class IAController : MonoBehaviour
                         }
 
                         transform.position = nextPositon;
+                        map.matrix[position.x, position.y].SetObject(null);
                         position = new Vector2Int((int)path[0].position.x, (int)path[0].position.y);
+                        path[0].SetObject(this.gameObject);
 
                        
 
                         var cell = path[0];
 
                         nextPositon = convertTileCoordInScreenCoord((int)cell.position.x, (int)cell.position.y);
+                        nextPositon += new Vector2(0, cell.position.z);
                         //nextPositon = new Vector2(-5 + cell.position.x * 0.5f, -5 + cell.position.y * 0.5f);
 
                         distance = (transform.position - new Vector3(nextPositon.x, nextPositon.y))
@@ -216,9 +219,6 @@ public class IAController : MonoBehaviour
                                 ((map.GetHeight() - (int)position.y) +
                                  (map.GetWidth() - (int)position.x)) * 2 + 1;
                         }
-
-
-                        Debug.Log("Middle");
                     }
                 }
 
@@ -236,8 +236,8 @@ public class IAController : MonoBehaviour
     private Vector2 convertTileCoordInScreenCoord(int tileCoordX, int tileCoordY)
     {
         Vector2 screenCoord;
-        screenCoord.x = (float)(-0.25f + ((tileCoordX - tileCoordY) * 0.5f));
-        screenCoord.y = (float)(-4.80f + ((tileCoordX + tileCoordY) * (0.5f / 2)));
+        screenCoord.x = (float)(-0.25f + ((tileCoordX - tileCoordY)));
+        screenCoord.y = (float)(-4.80f + ((tileCoordX + tileCoordY) * (0.5f)));
         return screenCoord;
     }
 

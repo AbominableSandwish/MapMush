@@ -64,8 +64,6 @@ public class Map
             }
 
             List<Cell> cells = bfs.Research(x, y, z);
-            // Random.Range(0, width) Random.Range(0, this.height)
-            //bfs.Research(width / 2, height / 2, 10);
             counter += Time.deltaTime;
 
             foreach (var cell in cells)
@@ -73,15 +71,6 @@ public class Map
                 cell.position.z += PerlinNoiseMap(0,0);
             }
         }
-
-        //for (int j = 0; j < this.width; j++)
-        //{
-        //    for (int k = 0; k < this.height; k++)
-        //    {
-        //        matrix[j,k].position.z = PerlinNoiseMap(j,k)*10;
-        //    }
-        //}
-
 
         foreach (var cell in matrix)
         {

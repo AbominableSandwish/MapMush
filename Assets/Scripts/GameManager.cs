@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     private MapManager mapManager;
     private UIMapManager uiMapManager;
     private IAManager iaManager;
+    private CameraManager cameraManager;
 
     private Vector2Int cell_select = new Vector2Int(0, 0);
     
@@ -39,30 +40,19 @@ public class GameManager : MonoBehaviour
         mapManager = GameObject.Find("Map").GetComponent<MapManager>();
         uiMapManager = GameObject.Find("Map").GetComponent<UIMapManager>();
         iaManager = GameObject.Find("IAManager").GetComponent<IAManager>();
+        cameraManager = Camera.main.gameObject.GetComponent<CameraManager>();
         Generate();
         teamIsPlaying = 1;
     }
 
-
-
     public void Generate()
     {
         uiMapManager.Refresh();
-        uiMapManager.Refresh2();
         mapManager.GenerateMap();
         mapManager.Refresh();
 
         iaManager.InstancePlayer(mapManager);
-
-        Camera.main.gameObject.GetComponent<CameraManager>().RestartCamera();
-        //StartCoroutine(Search(0.2f));
-        //SetCellSelect();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+        cameraManager.RestartCamera();
     }
 
     public void ChangeCellSelect(Vector2Int movePosition)
@@ -95,15 +85,5 @@ public class GameManager : MonoBehaviour
     //    uiMapManager.SetTile(cells);
 
     //    Debug.Log(this.cell_select.x + " " + this.cell_select.y);
-    //}
-
-    //IEnumerator Search(float waitTime)
-    //{
-    //    while (true)
-    //    {
-    //        yield return new WaitForSeconds(waitTime);
-    //        SetCellSelect(new Vector2Int(Random.Range(0,20), Random.Range(0,20)));
-    //        print("WaitAndPrint " + Time.time);
-    //    }
     //}
 }
