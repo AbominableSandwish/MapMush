@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 using Vector3 = UnityEngine.Vector3;
 
 public class CameraManager : MonoBehaviour
@@ -21,6 +22,8 @@ public class CameraManager : MonoBehaviour
     private Bucket[,] buckets;
 
     private Vector2 direction;
+
+    [SerializeField] private float LengthVisibility;
 
     public void RestartCamera()
     {
@@ -151,8 +154,8 @@ public class CameraManager : MonoBehaviour
                 for (int y = 0; y < (int)(Mathf.Sqrt(max_bucket)); y++)
                 {
 
-                    if ((this.buckets[x, y].position - positionCamera).magnitude <= 19f &&
-                        (this.buckets[x, y].position - positionCamera).magnitude >= -19f)
+                    if ((this.buckets[x, y].position - positionCamera).magnitude <= LengthVisibility &&
+                        (this.buckets[x, y].position - positionCamera).magnitude >= -LengthVisibility)
                     {
                         this.buckets[x, y].SetVisibilty(true);
                     }

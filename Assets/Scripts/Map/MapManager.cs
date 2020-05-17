@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Numerics;
 using System.Security.Cryptography;
 using UnityEngine;
@@ -74,11 +75,15 @@ public class MapManager : MonoBehaviour
                 if (map.matrix[i, j].get_type() == 1)
                 {
                     cell.GetComponent<SpriteRenderer>().sprite = tile_Dirt;
+                    float color = +0.9f - 0.1f * (shadow / map.matrix[i, j].position.z/2);
+                    cell.GetComponent<SpriteRenderer>().color = new Color(color,color,color,1);
                 }
                 
                 if(map.matrix[i, j].get_type() == 2)
                 {
                     cell.GetComponent<SpriteRenderer>().sprite = tile_Rock;
+                    float color = +0.9f - 0.1f * (shadow / map.matrix[i, j].position.z/2);
+                    cell.GetComponent<SpriteRenderer>().color = new Color(color, color, color, 1);
                 }
 
                 if (map.matrix[i, j].get_type() == 3)
@@ -94,6 +99,8 @@ public class MapManager : MonoBehaviour
             }
         }
     }
+
+    [SerializeField] private float shadow;
 
     public Map GetMap()
     {

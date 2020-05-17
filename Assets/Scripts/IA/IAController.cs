@@ -69,8 +69,7 @@ public class IAController : MonoBehaviour
     {
         if (path != null)
         {
-            if(path.Count > 1)
-                celltarget = path[1];
+            celltarget = path[indexPath+1];
             GetComponentInChildren<Animator>().SetBool("IsMoving", true);
 
             startPosition = convertTileCoordInScreenCoord((int)path[indexPath].position.x, (int)path[indexPath].position.y);
@@ -104,57 +103,55 @@ public class IAController : MonoBehaviour
         switch (state)
         {
             case State.IDLE:
-                if (!isBlocking)
-                {
-                    this.direction = Vector2.zero;
-                    nextPositon = Vector2.zero;
-                    if (Time.time >= time)
+                if (!isWaiting) {
+                    if (!isBlocking)
                     {
-                        if (position != null)
+                        this.direction = Vector2.zero;
+                        nextPositon = Vector2.zero;
+                        if (Time.time >= time)
                         {
-
-                            cells = new List<Cell>();
-                            search = new Search();
-                            cells = search.Research(position.x, position.y, 3);
-
-                            if (cells.Count <= 2)
+                            if (position != null)
                             {
-                                isBlocking = true;
-                                return;
-                            }
 
-                            if (cells != null)
-                            {
-                                int indexPath = Random.Range(0, cells.Count - 1);
-                                targetPositon = new Vector2Int((int)cells[indexPath].position.x,
-                                    (int)cells[indexPath].position.y);
+                                cells = new List<Cell>();
+                                search = new Search();
+                                cells = search.Research(position.x, position.y, 3);
 
-                                path = new List<Cell>();
-                                path = search.Path(new Vector2Int(position.x, position.y), targetPositon);
-
-                                if (path != null)
+                                if (cells.Count <= 2)
                                 {
-                                    
-                                    CalcNewPosition(this.indexPath);
+                                    isBlocking = true;
+                                    return;
+                                }
 
-                                    if (direction.x < 0)
+                                if (cells != null)
+                                {
+                                    int indexPath = Random.Range(0, cells.Count - 1);
+                                    targetPositon = new Vector2Int((int) cells[indexPath].position.x,
+                                        (int) cells[indexPath].position.y);
+
+                                    path = new List<Cell>();
+                                    path = search.Path(new Vector2Int(position.x, position.y), targetPositon);
+
+                                    if (path != null)
                                     {
-                                        render.sortingOrder =
-                                            ((map.GetHeight() - (int)celltarget.position.y) +
-                                             (map.GetWidth() - (int)path[1].position.x)) * 3 + 2;
+
+                                        CalcNewPosition(this.indexPath);
+
+                                        if (direction.x < 0)
+                                        {
+                                            render.sortingOrder =celltarget.render.sortingOrder + 2;
+                                        }
+
+                                        if (direction.y < 0)
+                                        {
+                                            render.sortingOrder = celltarget.render.sortingOrder + 2;
+                                        }
+
+                                        //pathUI = Ui.AddPath(path);
+
+                                        state = State.MOVE;
+
                                     }
-
-                                    if (direction.y < 0)
-                                    {
-                                        render.sortingOrder =
-                                            ((map.GetHeight() - (int)celltarget.position.y) +
-                                             (map.GetWidth() - (int)celltarget.position.x)) * 3 + 2;
-                                    }
-
-                                    //pathUI = Ui.AddPath(path);
-
-                                    state = State.MOVE;
-
                                 }
                             }
                         }
@@ -178,6 +175,7 @@ public class IAController : MonoBehaviour
 
                         if (dist <= 0.1f)
                         {
+                            render.sortingOrder = celltarget.render.sortingOrder + 2;
                             //POSITION
                             transform.position = new Vector3(nextPositon.x, nextPositon.y + nextHeight);
 
@@ -204,16 +202,13 @@ public class IAController : MonoBehaviour
 
                             if (direction.x < 0)
                             {
-                                render.sortingOrder =
-                                    ((map.GetHeight() - (int)celltarget.position.y) +
-                                     (map.GetWidth() - (int)celltarget.position.x)) * 3 + 2;
+                                if(direction.y < 0)
+                                    render.sortingOrder = celltarget.render.sortingOrder + 2;
                             }
 
                             if (direction.y < 0)
                             {
-                                render.sortingOrder =
-                                    ((map.GetHeight() - (int)celltarget.position.y) +
-                                     (map.GetWidth() - (int)celltarget.position.x)) * 3 + 2;
+                                render.sortingOrder = celltarget.render.sortingOrder + 2;
                             }
 
 
@@ -246,7 +241,12 @@ public class IAController : MonoBehaviour
 
                         isWaiting = true;
 
-                       // Ui.RemovePath(pathUI);
+
+
+                        render.sortingOrder = celltarget.render.sortingOrder + 2;
+
+                        celltarget = null;
+                        // Ui.RemovePath(pathUI);
 
                         this.indexPath = 0;
 
