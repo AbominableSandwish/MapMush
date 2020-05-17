@@ -37,20 +37,19 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        mapManager = GameObject.Find("Map").GetComponent<MapManager>();
-        uiMapManager = GameObject.Find("Map").GetComponent<UIMapManager>();
-        iaManager = GameObject.Find("IAManager").GetComponent<IAManager>();
-        cameraManager = Camera.main.gameObject.GetComponent<CameraManager>();
+
         Generate();
         teamIsPlaying = 1;
     }
 
     public void Generate()
     {
-        uiMapManager.Refresh();
+        mapManager = GameObject.Find("Map").GetComponent<MapManager>();
+        uiMapManager = GameObject.Find("Map").GetComponent<UIMapManager>();
+        iaManager = GameObject.Find("IAManager").GetComponent<IAManager>();
+        cameraManager = Camera.main.gameObject.GetComponent<CameraManager>();
+        // mapManager.Clean();
         mapManager.GenerateMap();
-        mapManager.Refresh();
-
         iaManager.InstancePlayer(mapManager);
         cameraManager.RestartCamera();
     }
@@ -72,7 +71,7 @@ public class GameManager : MonoBehaviour
     {
         search = new Search();
         cells = search.Research(this.cell_select.x, this.cell_select.y, 40);
-        uiMapManager.SetTile(cells);
+       // uiMapManager.SetTile(cells);
 
         //path = search.Path(new Vector2Int(this.cell_select.x, this.cell_select.y), new Vector2Int(19, 19));
         //uiMapManager.SetTile2(path);

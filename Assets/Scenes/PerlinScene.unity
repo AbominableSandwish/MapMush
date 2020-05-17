@@ -395,7 +395,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraMode: 0
-  Velocity: 1
+  max_bucket: 144
+  Velocity: 20
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -423,7 +424,7 @@ Camera:
   far clip plane: 100
   field of view: 60
   orthographic: 1
-  orthographic size: 7
+  orthographic size: 10
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -490,7 +491,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 640410824}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -33.131516, y: 52.460236, z: -0.030741211}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 787501584}
@@ -1174,9 +1175,7 @@ MonoBehaviour:
   height: 144
   width: 144
   noise: 12
-  offset_Z: -5
-  map_view: {fileID: 265132204}
-  map_level_2: {fileID: 469805969}
+  offset_Z: -1
   prefabCell: {fileID: 5941278371581202619, guid: 59ef71a2e73dfd8428b42d8d3cd61ce2,
     type: 3}
   tile_Water: {fileID: -5800792307412622259, guid: 44292580753d5834982e6046a3291598,
@@ -1199,9 +1198,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ce7580930843df40a0f2dc989634175, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiTileMap: {fileID: 940764736}
-  uiTileMap2: {fileID: 928696575}
-  cursorCell: {fileID: 11400000, guid: b21230e7e96cdcb43bae86c85fa1aed4, type: 2}
+  width: 144
+  height: 144
+  transformParent: {fileID: 1331634368}
+  prefab: {fileID: 5941278371581202619, guid: f19765dcc3bb7ed4bad0425e9bb22482, type: 3}
+  cursorCell: {fileID: 21300000, guid: f8c6e54dc052c91428cde16b57cf9c4f, type: 3}
 --- !u!1 &1399602233
 GameObject:
   m_ObjectHideFlags: 0
@@ -1278,11 +1279,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff636450088260348bf8f1e0af3b28b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxInAction: 150
+  maxInAction: 100
   isReady: 0
   Player: {fileID: 7023444635772566496, guid: 21ed80d6d82de02499ebb168787cc048, type: 3}
   Player2: {fileID: 7023444635772566496, guid: a983b475385b5b04e949e045abcb19a0, type: 3}
-  nbrOfPlayer: 1000
+  nbrOfPlayer: 500
 --- !u!4 &1514241449
 Transform:
   m_ObjectHideFlags: 0

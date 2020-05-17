@@ -1,54 +1,127 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class IAManager : MonoBehaviour
 {
-    [SerializeField] private int maxInAction = 100;
-    private List<IAController> listIA;
+    [SerializeField] public int maxInAction = 100;
+    private List<IAController> listAllIA;
+    private IAController[] listIAInAction;
     public bool isReady = false;
 
     [SerializeField] private GameObject Player;
     [SerializeField] private GameObject Player2;
 
-
     [SerializeField] private int nbrOfPlayer = 20;
+    private int counter;
+
+    int GetActionFree()
+    {
+        int index = 0;
+        foreach (var iaAction in this.listIAInAction)
+        {
+            if (iaAction == null)
+            {
+                break;
+            }
+
+            index++;
+        }
+
+        if (index == this.listIAInAction.Length)
+        {
+            index = -1;
+        }
+
+        return index;
+    }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (listIA != null)
+        if (counter < maxInAction)
         {
-            if (listIA.Count != 0)
+            int indexAction = GetActionFree();
+            if (indexAction != -1)
             {
-                for (int i = 0; i < maxInAction; i++)
-                {
-                    if (!listIA[i].isWaiting)
-                    {
-                        listIA[i].Move();
-                    }
-                    else
-                    {
-                        IAController ia = listIA[i];
-                        listIA.Remove(listIA[i]);
-                        listIA.Add(ia);
-                        ia.isWaiting = false;
-                    }
+               
+                this.listIAInAction[indexAction] = listAllIA[0];
+                this.listIAInAction[indexAction].isWaiting = false;
+                listAllIA.Remove(listAllIA[0]);
+                listAllIA.Add(this.listIAInAction[indexAction]);
+                counter++;
+            }
+        }
 
+        for (int i = 0; i < listIAInAction.Length-1; i++)
+        {
+            if (listIAInAction[i] != null)
+            {
+                listIAInAction[i].Move();
+                if (listIAInAction[i].isWaiting)
+                {
+                    listIAInAction[i] = null;
+                    counter--;
                 }
             }
         }
+        
+
+
+
+
+
+
+
+        //if (listAllIA != null)
+        //{
+        //    if (listAllIA.Count != 0)
+        //    {
+        //        for (int i = 0; i < maxInAction; i++)
+        //        {
+        //            if (!listAllIA[i].isWaiting)
+        //            {
+        //                listAllIA[i].Move();
+        //            }
+        //            else
+        //            {
+        //                IAController ia = listAllIA[i];
+        //                listIA.Remove(listIA[i]);
+        //                listIA.Add(ia);
+        //                ia.isWaiting = false;
+        //            }
+
+        //        }
+        //    }
+        //}
     }
+
+    //public void IaFinished(IAController)
+    //{
+    //    listIA.Find()
+    //    IAController ia = listIA[i];
+    //    listIA.Remove(listIA[i]);
+    //    this.counter--;
+    //}
 
     public void AddIA(IAController ia)
     {
-       
-        if(this.listIA == null)
-            listIA = new List<IAController>();
-        if(this.listIA .Count != 0)
-            this.listIA.Insert(Random.Range(0, listIA.Count-1), ia);
+
+        if (this.listAllIA == null)
+        {
+            listAllIA = new List<IAController>();
+        }
+
+        if (maxInAction != 0)
+        {
+            this.listIAInAction = new IAController[maxInAction];
+        }
+
+        if(this.listAllIA.Count != 0)
+            this.listAllIA.Insert(Random.Range(0, listAllIA.Count-1), ia);
         else
-            this.listIA.Add(ia);
+            this.listAllIA.Add(ia);
     }
 
     private Vector3 convertTileCoordInScreenCoord(int tileCoordX, int tileCoordY)
@@ -91,12 +164,14 @@ public class IAManager : MonoBehaviour
                     {
                         player = GameObject.Instantiate(Player2, GameObject.Find("UnityMap").transform);
                     }
-
+                    player.GetComponent<IAController>().SetIA(mapManager.GetMap());
                     player.GetComponent<IAController>().SetPosition(new Vector2Int(i, j));
                     Vector3 position = convertTileCoordInScreenCoord(i, j);
                     position += new Vector3(0, mapManager.GetMap().matrix[i, j].position.z);
                     player.transform.position = position;
+                    
                     //player.transform.position = new Vector3(-5 + 0.5f * i, -5 + 0.5f * j);
+
                     mapManager.GetMap().AddObject(i, j, player);
                     AddIA(player.GetComponent<IAController>());
 

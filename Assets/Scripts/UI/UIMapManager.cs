@@ -5,86 +5,81 @@ using UnityEngine.Tilemaps;
 
 public class UIMapManager : MonoBehaviour
 {
-    [SerializeField] private Tilemap uiTileMap;
-    [SerializeField] private Tilemap uiTileMap2;
-    [SerializeField] private TileBase cursorCell;
+    [SerializeField] private int width;
+    [SerializeField] private int height;
+    [SerializeField] private Transform transformParent;
+    [SerializeField] private GameObject prefab;
+    [SerializeField] private Sprite cursorCell;
 
-    List<Cell> cellsTarget;
+    List<Cell>[] paths;
+    private List<Transform>[] pathsView;
 
-    // Start is called before the first frame update
-    void Start()
+    private Vector2 convertTileCoordInScreenCoord(int tileCoordX, int tileCoordY)
     {
-        cellsTarget = new List<Cell>();
+        Vector2 screenCoord;
+        screenCoord.x = (float)(-0.25f + ((tileCoordX - tileCoordY)));
+        screenCoord.y = (float)(-4.80f + ((tileCoordX + tileCoordY) * (0.5f)));
+        return screenCoord;
     }
 
-    void Update()
+    int FindFree()
     {
-      
-    }
-    //public void SetTile(Vector2Int position)
-    //{
-    //   // Refresh();
-    //    uiTileMap.SetTile(new Vector3Int(position.x, position.y, 0),  cursorCell);
-    //}
-
-    public void SetTile(List<Cell> cells)
-    {
-        StopCoroutine(Show(0.002f));
-        this.cellsTarget = cells;
-        Refresh();
-        StartCoroutine(Show(0.002f));
-    }
-
-    public void SetTile2(List<Cell> cells)
-    {
-        StopCoroutine(Show2(0.002f));
-        this.cellsTarget = cells;
-        Refresh2();
-        StartCoroutine(Show2(0.002f));
-    }
-
-    public void AddTile(Cell cell)
-    {
-        uiTileMap.SetTile(new Vector3Int((int)cell.position.x, (int)cell.position.y, 0), cursorCell);
-    }
-
-    public void Refresh()
-    {
-        uiTileMap.ClearAllTiles();
-    }
-
-    public void Refresh2()
-    {
-        uiTileMap2.ClearAllTiles();
-    }
-
-    IEnumerator Show(float time)
-    {
-
         int index = 0;
-        while (cellsTarget.Count != 0)
+        for (int i = 0; i < paths.Length - 1; i++)
         {
-            Cell cell = cellsTarget[0];
-            uiTileMap.SetTile(new Vector3Int((int)cell.position.x, (int)cell.position.y, 0), cursorCell);
-            cellsTarget.Remove(cell);
-            yield return new WaitForSeconds(time);
+            if (paths[i] == null)
+            {
+                index = i;
+                break;
+            }
         }
-        
+        return index;
     }
 
-    IEnumerator Show2(float time)
+    public int AddPath(List<Cell> path)
     {
-
-        int index = 0;
-        while (cellsTarget.Count != 0)
+        if (this.paths == null)
         {
-            Cell cell = cellsTarget[0];
-            uiTileMap2.SetTile(new Vector3Int((int)cell.position.x, (int)cell.position.y, 0), cursorCell);
-            cellsTarget.Remove(cell);
-            yield return new WaitForSeconds(time);
+            this.paths = new List<Cell>[GameObject.Find("IAManager").GetComponent<IAManager>().maxInAction];
+            this.pathsView = new List<Transform>[GameObject.Find("IAManager").GetComponent<IAManager>().maxInAction];
         }
 
+        int index = FindFree();
+        this.paths[index] = path;
+        ShowPath(index);
+        return index;
+    }
+
+    public void RemovePath(int index)
+    {
+        foreach (var CellUi in this.pathsView[index])
+        {
+            Destroy(CellUi.gameObject);
+        }
+        this.paths[index] = null;
+    }
+
+    public void ShowPath(int index)
+    {
+        List<Transform> view = new List<Transform>();
+        foreach (Cell cell in this.paths[index])
+        {
+          
+            Vector2 positionCell = convertTileCoordInScreenCoord((int)cell.position.x, (int)cell.position.y);
+            Vector3 positionMap = new Vector3(positionCell.x, positionCell.y, 0) + new Vector3(0, GetComponent<MapManager>().GetMap().matrix[(int)cell.position.x, (int)cell.position.y].position.z+0.75f);
+            var cellUI = Instantiate(prefab, positionMap, Quaternion.identity, transform);
+            cellUI.GetComponent<SpriteRenderer>().sortingOrder =
+                ((height - (int)cell.position.y) +
+                 (width - (int)cell.position.x)) * 3 + 2;
+            view.Add(cellUI.transform);
+        }
+
+        pathsView[index] = view;
     }
 
 
+    public void CleanPath(int index)
+    {
+        // uiTileMap.ClearAllTiles();
+    }
 }

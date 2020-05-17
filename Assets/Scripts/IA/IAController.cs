@@ -7,7 +7,9 @@ public class IAController : MonoBehaviour
     enum State
     {
         IDLE,
-        MOVE
+        MOVE,
+        ClIMB,
+        BREAK
     }
 
     public bool isWaiting = true;
@@ -15,19 +17,24 @@ public class IAController : MonoBehaviour
 
     private Map map;
     private Cell cell;
+    private SpriteRenderer render;
+    private UIMapManager Ui;
 
-
-    // Start is called before the first frame update
-    void Start()
+    public void SetIA(Map map)
     {
         search = new Search();
-        map = GameObject.Find("Map").GetComponent<MapManager>().GetMap();
+        this.map = map;
+        this.render = GetComponentInChildren<SpriteRenderer>();
+
+
+        GetComponentInChildren<Animator>().speed += Random.Range(-0.4f, 0.4f);
+        Ui = GameObject.Find("Map").GetComponent<UIMapManager>();
+
     }
 
     public void SetPosition(Vector2Int position)
     {
         this.position = position;
-
     }
 
     private Vector2Int position;
@@ -37,7 +44,7 @@ public class IAController : MonoBehaviour
     public Search search;
 
     public Cell cellStart;
-    private Cell cellTarget;
+    public Cell celltarget;
 
     public Vector2 nextCellPosition;
 
@@ -46,12 +53,50 @@ public class IAController : MonoBehaviour
     private bool isBlocking = false;
 
     //Move
-    private Vector2 direction;
+    [SerializeField] private Vector2 direction;
+    public Vector2 startPosition;
     public Vector2 nextPositon;
+    private int indexPath = 0;
 
     private float timeToWait = 1.5f;
     private float time;
+    private float height;
+    private float nextHeight;
 
+    private int pathUI;
+
+    public void CalcNewPosition(int indexPath)
+    {
+        if (path != null)
+        {
+            if(path.Count > 1)
+                celltarget = path[1];
+            GetComponentInChildren<Animator>().SetBool("IsMoving", true);
+
+            startPosition = convertTileCoordInScreenCoord((int)path[indexPath].position.x, (int)path[indexPath].position.y);
+            nextPositon = convertTileCoordInScreenCoord((int)path[indexPath+1].position.x, (int)path[indexPath + 1].position.y);    
+
+            if (path[indexPath].position.z != path[indexPath+1].position.z)
+            {
+                height = path[indexPath+1].position.z - path[indexPath].position.z;
+
+            }
+
+            nextHeight = path[indexPath+1].position.z;
+            distance = (new Vector3(startPosition.x, startPosition.y) - new Vector3(nextPositon.x, nextPositon.y)).magnitude;
+            direction = (new Vector3(nextPositon.x, nextPositon.y) - new Vector3(startPosition.x, startPosition.y)).normalized;
+
+            // FLIP
+            if (direction.x < 0)
+            {
+                render.flipX = true;
+            }
+            else
+            {
+                render.flipX = false;
+            }
+        }
+    }
 
     // Update is called once per frame
     public void Move()
@@ -80,23 +125,36 @@ public class IAController : MonoBehaviour
 
                             if (cells != null)
                             {
-                                int index = Random.Range(0, cells.Count - 1);
-                                targetPositon = new Vector2Int((int)cells[index].position.x,
-                                    (int)cells[index].position.y);
+                                int indexPath = Random.Range(0, cells.Count - 1);
+                                targetPositon = new Vector2Int((int)cells[indexPath].position.x,
+                                    (int)cells[indexPath].position.y);
 
                                 path = new List<Cell>();
                                 path = search.Path(new Vector2Int(position.x, position.y), targetPositon);
+
                                 if (path != null)
                                 {
-                                    nextPositon = convertTileCoordInScreenCoord((int)path[0].position.x, (int)path[0].position.y);
-                                    nextPositon += new Vector2(0.0f, path[0].position.z);
-                                    distance = (transform.position - new Vector3(nextPositon.x, nextPositon.y))
-                                        .magnitude;
-                                    direction = (nextPositon - new Vector2(transform.position.x, transform.position.y)).normalized;
                                     
-                                        GetComponentInChildren<SpriteRenderer>().sortingOrder =
-                                            ((map.GetHeight() - (int)position.y) + (map.GetWidth() - (int)position.x)) * 2 + 1;
+                                    CalcNewPosition(this.indexPath);
+
+                                    if (direction.x < 0)
+                                    {
+                                        render.sortingOrder =
+                                            ((map.GetHeight() - (int)celltarget.position.y) +
+                                             (map.GetWidth() - (int)path[1].position.x)) * 3 + 2;
+                                    }
+
+                                    if (direction.y < 0)
+                                    {
+                                        render.sortingOrder =
+                                            ((map.GetHeight() - (int)celltarget.position.y) +
+                                             (map.GetWidth() - (int)celltarget.position.x)) * 3 + 2;
+                                    }
+
+                                    //pathUI = Ui.AddPath(path);
+
                                     state = State.MOVE;
+
                                 }
                             }
                         }
@@ -105,87 +163,76 @@ public class IAController : MonoBehaviour
                 break;
 
             case State.MOVE:
-                transform.position += new Vector3(direction.x, direction.y) * Time.deltaTime;
-                SpriteRenderer render = GetComponentInChildren<SpriteRenderer>();
-
-                if (transform.position.magnitude - nextPositon.magnitude <= .01f &&
-                    nextPositon.magnitude - transform.position.magnitude <= .01f)
+                if (this.indexPath != path.Count-1)
                 {
-
-                    
-
-                    render.sortingOrder =
-                        ((map.GetHeight() - (int)position.y) +
-                         (map.GetWidth() - (int)position.x)) * 2 + 1;
+                    float dist = (startPosition - nextPositon).magnitude;
 
 
-                    if (path.Count != 0)
+                    if (dist <= distance / 2)
                     {
-
-
-                        if (direction.x > 0)
+                        if (height != 0.0f)
                         {
-                            render.sortingOrder =
-                                ((map.GetHeight() - (int)position.y) +
-                                 (map.GetWidth() - (int)position.x)) * 2 + 1;
+                            state = State.ClIMB;
+                            return;
                         }
 
-                        if (direction.y > 0)
+                        if (dist <= 0.1f)
                         {
-                            render.sortingOrder =
-                                ((map.GetHeight() - (int)position.y) +
-                                 (map.GetWidth() - (int)position.x)) * 2 + 1;
+                            //POSITION
+                            transform.position = new Vector3(nextPositon.x, nextPositon.y + nextHeight);
+
+                            map.matrix[position.x, position.y].SetObject(null);
+
+                                path[indexPath].SetObject(this.gameObject);
+                                position = new Vector2Int((int)path[indexPath].position.x, (int)path[indexPath].position.y);
+                                indexPath++;
+
+                            if (this.indexPath != path.Count - 1)
+                            {
+                                CalcNewPosition(indexPath);
+
+                            }
+                            //VIEW
+                            // LAYOUT
+                            //render.sortingOrder =
+                            //    ((map.GetHeight() - (int)position.y) +
+                            //     (map.GetWidth() - (int)position.x)) * 3 + 2;
+
+
+
+
+
+                            if (direction.x < 0)
+                            {
+                                render.sortingOrder =
+                                    ((map.GetHeight() - (int)celltarget.position.y) +
+                                     (map.GetWidth() - (int)celltarget.position.x)) * 3 + 2;
+                            }
+
+                            if (direction.y < 0)
+                            {
+                                render.sortingOrder =
+                                    ((map.GetHeight() - (int)celltarget.position.y) +
+                                     (map.GetWidth() - (int)celltarget.position.x)) * 3 + 2;
+                            }
+
+
+
+                            GetComponentInChildren<Animator>().SetBool("IsMoving", true);
                         }
-
-                        transform.position = nextPositon;
-                        map.matrix[position.x, position.y].SetObject(null);
-                        position = new Vector2Int((int)path[0].position.x, (int)path[0].position.y);
-                        path[0].SetObject(this.gameObject);
-
-                       
-
-                        var cell = path[0];
-
-                        nextPositon = convertTileCoordInScreenCoord((int)cell.position.x, (int)cell.position.y);
-                        nextPositon += new Vector2(0, cell.position.z);
-                        //nextPositon = new Vector2(-5 + cell.position.x * 0.5f, -5 + cell.position.y * 0.5f);
-
-                        distance = (transform.position - new Vector3(nextPositon.x, nextPositon.y))
-                            .magnitude;
-                        direction = (nextPositon - new Vector2(transform.position.x, transform.position.y)).normalized;
-
-                        if (direction.x > 0)
-                        {
-                            render.sortingOrder =
-                                ((map.GetHeight() - (int)position.y) +
-                                 (map.GetWidth() - (int)position.x)) * 2 + 1;
-                        }
-
-                        //if (direction.y < 0)
-                        //{
-                        //    render.sortingOrder =
-                        //        ((map.GetHeight() - (int)position.y) +
-                        //         (map.GetWidth() - (int)position.x)) * 2 + 1;
-                        //}
-
-
-                        if (direction.x < 0)
-                        {
-                            GetComponentInChildren<SpriteRenderer>().flipX = true;
-                        }
-                        else
-                        {
-                            GetComponentInChildren<SpriteRenderer>().flipX = false;
-                        }
-
-                        GetComponentInChildren<Animator>().SetBool("IsMoving", true);
-                        path.Remove(path[0]);
                     }
-                    else
+
+
+                    //Debug.Log("Distance " + (new Vector3(startPosition.x, startPosition.y) - transform.position).magnitude + " == " +distance);
+
+                }
+                else
+                {
+                    if (startPosition.magnitude - nextPositon.magnitude <= .1f)
                     {
                         //move_object(path[0].position, path[i - 1].position);
-
-                        transform.position = nextPositon;
+                        position = new Vector2Int((int)path[indexPath].position.x, (int)path[indexPath].position.y);
+                        transform.position = new Vector3(nextPositon.x, nextPositon.y + nextHeight);
 
                         direction = Vector2.zero;
 
@@ -199,29 +246,32 @@ public class IAController : MonoBehaviour
 
                         isWaiting = true;
 
+                       // Ui.RemovePath(pathUI);
+
+                        this.indexPath = 0;
+
+                        //render.sortingOrder =
+                        //    ((map.GetHeight() - (int) position.y) +
+                        //     (map.GetWidth() - (int) position.x)) * 3 + 2;
+
                         state = State.IDLE;
                         return;
                     }
                 }
-                else
-                {
-                    if((transform.position - new Vector3(nextPositon.x, nextPositon.y)).magnitude <= distance / 4)
-                    {
-                        if (direction.x < 0)
-                        {
-                            render.sortingOrder =
-                                ((map.GetHeight() - (int)position.y) +
-                                 (map.GetWidth() - (int)position.x)) * 2 + 1;
-                        }
-                        if (direction.y < 0)
-                        {
-                            render.sortingOrder =
-                                ((map.GetHeight() - (int)position.y) +
-                                 (map.GetWidth() - (int)position.x)) * 2 + 1;
-                        }
-                    }
-                }
 
+                transform.position += new Vector3(direction.x, direction.y) * Time.deltaTime;
+                startPosition += direction * Time.deltaTime;
+                break;
+
+            case State.ClIMB:
+                transform.position += new Vector3(0, height);
+
+                render.sortingOrder =
+                    ((map.GetHeight() - (int)path[indexPath+1].position.y) +
+                     (map.GetWidth() - (int)path[indexPath+1].position.x)) * 3 + 2;
+
+                height = 0.0f;
+                state = State.MOVE;
                 break;
         }
 

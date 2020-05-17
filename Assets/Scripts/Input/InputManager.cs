@@ -19,7 +19,7 @@ public class InputManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
@@ -44,25 +44,48 @@ public class InputManager : MonoBehaviour
 
         if (cameraManager.cameraMode == CameraManager.Mode.FREE)
         {
+            if (Input.GetKeyUp(KeyCode.LeftArrow))
+            {
+                cameraManager.SetDirectionX(0);
+
+            }
+
+            if (Input.GetKeyUp(KeyCode.RightArrow))
+            {
+                cameraManager.SetDirectionX(0);
+            }
+
+            if (Input.GetKeyUp(KeyCode.UpArrow))
+            {
+                cameraManager.SetDirectionY(0);
+            }
+
+            if (Input.GetKeyUp(KeyCode.DownArrow))
+            {
+                cameraManager.SetDirectionY(0);
+            }
+
             if (Input.GetKey(KeyCode.LeftArrow))
             {
-                cameraManager.CameraMove(new Vector3(-1, 0));
+                cameraManager.SetDirectionX(-1);
             }
 
             if (Input.GetKey(KeyCode.RightArrow))
             {
-               cameraManager.CameraMove(new Vector3(+1, 0));
+               cameraManager.SetDirectionX(+1);
             }
 
             if (Input.GetKey(KeyCode.UpArrow))
             {
-                cameraManager.CameraMove(new Vector3(0, +1));
+                cameraManager.SetDirectionY(+1);
             }
 
             if (Input.GetKey(KeyCode.DownArrow))
             {
-                cameraManager.CameraMove(new Vector3(0, -1));
+                cameraManager.SetDirectionY(-1);
             }
+
+          
         }
 
        // if(Camera.main.WorldToScreenPoint(Input.mousePosition))

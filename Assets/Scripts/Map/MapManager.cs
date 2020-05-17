@@ -12,32 +12,29 @@ using Vector3 = UnityEngine.Vector3;
 
 public class MapManager : MonoBehaviour
 {
-    Map map;
+    private Map map;
+    private List<GameObject> objects;
 
-    [SerializeField] private int height = 20;
-    [SerializeField] private int width = 20;
+    [Header("Size Map")]
+    [SerializeField] private int height;
+    [SerializeField] private int width;
 
+    [Header("Generation Procedural")]
     [SerializeField] private int noise;
     [SerializeField] private float offset_Z;
 
-
-    [SerializeField] private Tilemap map_view;
-    [SerializeField] private Tilemap map_level_2;
-
+    [Header("Prefab & Sprites")]
     [SerializeField] private GameObject prefabCell;
-
     [SerializeField] private Sprite tile_Water;
     [SerializeField] private Sprite tile_Dirt;
     [SerializeField] private Sprite tile_Rock;
     [SerializeField] private Sprite tile_HightRock;
 
-
     public void GenerateMap()
     {
-        map_view.ClearAllTiles();
-        map_level_2.ClearAllTiles();
         map = new Map();
-        map.Generate(height, width, map_view, offset_Z, noise);      
+        map.Generate(height, width, offset_Z, noise);
+        Clean();
     }
 
     private Vector2 convertTileCoordInScreenCoord(int tileCoordX, int tileCoordY)
@@ -48,9 +45,7 @@ public class MapManager : MonoBehaviour
         return screenCoord;
     }
 
-    private List<GameObject> objects;
-
-    public void Refresh()
+    public void Clean()
     {
         if (objects != null)
         {
@@ -66,13 +61,11 @@ public class MapManager : MonoBehaviour
         {
             for (int j = 0; j < map.GetWidth(); j++)
             {
-
                 Vector2 positionCell = convertTileCoordInScreenCoord(i, j);
                 Vector3 positionMap = new Vector3(positionCell.x, positionCell.y, 0)+ new Vector3(0, 0);
                 var cell = Instantiate(prefabCell, this.transform);
                 cell.transform.position = positionMap + new Vector3(0, map.matrix[i, j].position.z);
                 
-
                 if (map.matrix[i, j].get_type() == 0)
                 {
                     cell.GetComponent<SpriteRenderer>().sprite = tile_Water;
@@ -89,14 +82,14 @@ public class MapManager : MonoBehaviour
                 }
 
                 if (map.matrix[i, j].get_type() == 3)
-                { 
+                {
                     cell.GetComponent<SpriteRenderer>().sprite = tile_HightRock;
                 }
 
                 if (map.matrix[i, j].render == null)
                     map.matrix[i, j].SetSpriteRender(cell.GetComponent<SpriteRenderer>());
 
-                cell.GetComponent<SpriteRenderer>().sortingOrder = ((map.GetHeight() - j) + (map.GetWidth() - i)) * 2;
+                cell.GetComponent<SpriteRenderer>().sortingOrder = ((map.GetHeight() - j) + (map.GetWidth() - i)) * 3;
                 objects.Add(cell);
             }
         }
@@ -105,10 +98,5 @@ public class MapManager : MonoBehaviour
     public Map GetMap()
     {
         return this.map;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
     }
 }

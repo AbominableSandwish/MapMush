@@ -24,11 +24,11 @@ public class Map
     public float PerlinNoiseMap(int x, int y)
     {
         counter += Time.deltaTime;
-        moy = Mathf.PerlinNoise(x,y);
+        moy = ((float)((int)(Mathf.PerlinNoise(x,y)*10.0f))/10.0f);
         return moy;
     }
 
-    public void Generate(int height, int width,Tilemap map_view, float offset_Z, int noise)
+    public void Generate(int height, int width, float offset_Z, int noise)
     {
         this.height = height;
         this.width = width;
@@ -68,14 +68,15 @@ public class Map
 
             foreach (var cell in cells)
             {
-                cell.position.z += PerlinNoiseMap(0,0);
+                cell.position += new Vector3(0,0, PerlinNoiseMap(0,0));
             }
         }
 
-        foreach (var cell in matrix)
-        {
-            cell.position.z /= 1.5f;
-        }
+        //foreach (var cell in matrix)
+        //{
+        //    cell.position.z /= 5.0f;
+        //}
+
 
         for (int i = 0; i < width; i++)
         {
@@ -94,6 +95,9 @@ public class Map
                     matrix[i, j].set_type(3);
             }
         }
+
+
+       
     }
 
     public void AddObject(int x, int y, GameObject Object)

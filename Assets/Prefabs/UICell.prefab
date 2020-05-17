@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5941278371581202612}
   - component: {fileID: 5941278371581202613}
   m_Layer: 0
-  m_Name: Cell
+  m_Name: UICell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -70,8 +70,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 9046047427341356226, guid: 44292580753d5834982e6046a3291598,
-    type: 3}
+  m_Sprite: {fileID: 21300000, guid: f8c6e54dc052c91428cde16b57cf9c4f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
