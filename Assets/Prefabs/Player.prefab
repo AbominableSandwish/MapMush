@@ -154,6 +154,8 @@ MonoBehaviour:
   targetPositon: {x: 0, y: 0}
   nextCellPosition: {x: 0, y: 0}
   distance: 0
+  direction: {x: 0, y: 0}
+  startPosition: {x: 0, y: 0}
   nextPositon: {x: 0, y: 0}
 --- !u!1001 &7023444634943474950
 PrefabInstance:

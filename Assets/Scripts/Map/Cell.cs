@@ -17,6 +17,13 @@ public class Cell
 
     public GameObject Object;
 
+    public SpriteRenderer Decoration;
+
+    public void SetDecoration(SpriteRenderer deco)
+    {
+        this.Decoration = deco;
+    }
+
     public void SetSpriteRender(SpriteRenderer render)
     {
         this.render = render;

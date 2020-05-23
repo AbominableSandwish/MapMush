@@ -35,6 +35,12 @@ public class IAController : MonoBehaviour
     public void SetPosition(Vector2Int position)
     {
         this.position = position;
+
+        cells = new List<Cell>();
+        search = new Search();
+        cells = search.Research(position.x, position.y, 1);
+
+        render.sortingOrder = cells[0].render.sortingOrder + 2;
     }
 
     private Vector2Int position;
@@ -139,7 +145,7 @@ public class IAController : MonoBehaviour
 
                                         if (direction.x < 0)
                                         {
-                                            render.sortingOrder =celltarget.render.sortingOrder + 2;
+                                            render.sortingOrder = celltarget.render.sortingOrder + 2;
                                         }
 
                                         if (direction.y < 0)
@@ -147,7 +153,7 @@ public class IAController : MonoBehaviour
                                             render.sortingOrder = celltarget.render.sortingOrder + 2;
                                         }
 
-                                        //pathUI = Ui.AddPath(path);
+                                        pathUI = Ui.AddPath(path);
 
                                         state = State.MOVE;
 
@@ -246,7 +252,7 @@ public class IAController : MonoBehaviour
                         render.sortingOrder = celltarget.render.sortingOrder + 2;
 
                         celltarget = null;
-                        // Ui.RemovePath(pathUI);
+                        Ui.RemovePath(pathUI);
 
                         this.indexPath = 0;
 
@@ -266,9 +272,7 @@ public class IAController : MonoBehaviour
             case State.ClIMB:
                 transform.position += new Vector3(0, height);
 
-                render.sortingOrder =
-                    ((map.GetHeight() - (int)path[indexPath+1].position.y) +
-                     (map.GetWidth() - (int)path[indexPath+1].position.x)) * 3 + 2;
+                render.sortingOrder = celltarget.render.sortingOrder +2;
 
                 height = 0.0f;
                 state = State.MOVE;

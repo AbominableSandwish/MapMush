@@ -105,6 +105,16 @@ public class CameraManager : MonoBehaviour
         this.direction = new Vector2(this.direction.x, y);
     }
 
+    public void SetDirectionX(float x)
+    {
+        this.direction = new Vector2(x, this.direction.y);
+    }
+
+    public void SetDirectionY(float y)
+    {
+        this.direction = new Vector2(this.direction.x, y);
+    }
+
     void FixedUpdate()
     {
         if (direction.magnitude != 0.0f)

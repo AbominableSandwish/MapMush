@@ -10,12 +10,20 @@ public class InputManager : MonoBehaviour
 {
     private GameManager gameManager;
     private CameraManager cameraManager;
+    private Vector2 sizeDisplay;
+
+
+    public float PercentBoardScreen;
+
+    private Vector2 dirCamera;
 
     void Start()
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         cameraManager = Camera.main.GetComponent<CameraManager>();
         Cursor.lockState = CursorLockMode.Confined;
+
+        sizeDisplay = new Vector2(Display.main.renderingWidth, Display.main.renderingHeight);
     }
 
     // Update is called once per frame
@@ -88,10 +96,53 @@ public class InputManager : MonoBehaviour
           
         }
 
-       // if(Camera.main.WorldToScreenPoint(Input.mousePosition))
-       //Cursor.visible
-        //Debug.Log(Camera.main.(Input.mousePosition));
-        //if(MouseOverEvent
-        
+        Vector2 mousePosition = Input.mousePosition;
+        dirCamera = Vector2.zero;
+
+        if ((mousePosition.x >= 0 && mousePosition.x <= sizeDisplay.x)
+            && (mousePosition.y >= 0 && mousePosition.y <= sizeDisplay.y))
+        {
+            Debug.Log("IN");
+            if (mousePosition.y < sizeDisplay.y / 100 * PercentBoardScreen)
+            {
+                dirCamera.y = -(1 - (mousePosition / (sizeDisplay / 100 * PercentBoardScreen)).y);
+            }
+
+
+            if (mousePosition.y > sizeDisplay.y / 100 * (100 - PercentBoardScreen))
+            {
+                dirCamera.y = (mousePosition.y - sizeDisplay.y / 100 * (100 - PercentBoardScreen)) / (sizeDisplay.y / 100 * PercentBoardScreen);
+            }
+
+
+            if (mousePosition.x < sizeDisplay.x / 100 * 15)
+            {
+                if (mousePosition.x < sizeDisplay.x / 100 * 5)
+                {
+                    dirCamera.x = -1f;
+                }
+                else
+                {
+                    dirCamera.x = -0.5f;
+                }
+            }
+
+            if (mousePosition.x > sizeDisplay.x / 100 * 85)
+            {
+                if (mousePosition.x > sizeDisplay.x / 100 * 95)
+                {
+                    dirCamera.x = 1f;
+                }
+                else
+                {
+                    dirCamera.x = 0.5f;
+                }
+            }
+
+
+            cameraManager.SetDirectionX(dirCamera.x);
+            cameraManager.SetDirectionY(dirCamera.y);
+        }
     }
+
 }
