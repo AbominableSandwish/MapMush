@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq.Expressions;
 using System.Numerics;
 using System.Security.Cryptography;
@@ -47,6 +48,8 @@ public class MapManager : MonoBehaviour
         map = new Map();
         map.Generate(height, width, offset_Z, noise);
         Clean();
+
+        SaveIntoJson();
     }
 
     private Vector2 convertTileCoordInScreenCoord(int tileCoordX, int tileCoordY)
@@ -207,4 +210,38 @@ public class MapManager : MonoBehaviour
     {
         return this.map;
     }
+
+    public void SaveIntoJson()
+    {
+        string map = ToJson(this.map.matrix);
+        System.IO.File.WriteAllText(Application.persistentDataPath + "/MapData.json", map);
+    }
+
+    private void ReadFormatJson()
+    {
+        string path = Application.dataPath + "/ScoreRecords.json";
+        string jsonString = File.ReadAllText(path);
+    }
+
+
+    [System.Serializable]
+    private class MapDictionary
+    {
+        public Cell[] items;
+    }
+
+    private static string ToJson(Cell[,] cells)
+    {
+        List<Cell> dictionaryItemsList = new List<Cell>();
+        foreach (var cell in cells)
+        {
+            dictionaryItemsList.Add(cell);
+        }
+
+        MapDictionary dictionaryArray = new MapDictionary();
+        dictionaryArray.items = dictionaryItemsList.ToArray();
+
+        return JsonUtility.ToJson(dictionaryArray);
+    }
+
 }

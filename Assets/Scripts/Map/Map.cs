@@ -4,10 +4,11 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
+[Serializable]
 public class Map
 {
-    private int height = 20;
-    private int width = 20;
+    public int height = 20;
+    public int width = 20;
 
     public Cell[,] matrix;
 

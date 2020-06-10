@@ -148,10 +148,10 @@ Transform:
   m_GameObject: {fileID: 265132201}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
-  m_Father: {fileID: 1399602235}
-  m_RootOrder: 0
+  m_Father: {fileID: 1331634368}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!483693784 &265132203
 TilemapRenderer:
@@ -268,7 +268,7 @@ Transform:
   m_LocalScale: {x: 4, y: 4, z: 1}
   m_Children: []
   m_Father: {fileID: 1331634368}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!199 &287599468
 ParticleSystemRenderer:
@@ -5019,10 +5019,10 @@ Transform:
   m_GameObject: {fileID: 469805966}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
-  m_Father: {fileID: 1399602235}
-  m_RootOrder: 1
+  m_Father: {fileID: 1331634368}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!483693784 &469805968
 TilemapRenderer:
@@ -5543,10 +5543,10 @@ Transform:
   m_GameObject: {fileID: 928696574}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
-  m_Father: {fileID: 1399602235}
-  m_RootOrder: 3
+  m_Father: {fileID: 1331634368}
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &940764733
 GameObject:
@@ -5575,10 +5575,10 @@ Transform:
   m_GameObject: {fileID: 940764733}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
-  m_Father: {fileID: 1399602235}
-  m_RootOrder: 2
+  m_Father: {fileID: 1331634368}
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!483693784 &940764735
 TilemapRenderer:
@@ -5913,9 +5913,12 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1399602235}
   - {fileID: 287599467}
   - {fileID: 1368814671}
+  - {fileID: 265132202}
+  - {fileID: 469805967}
+  - {fileID: 940764734}
+  - {fileID: 928696577}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6003,7 +6006,7 @@ Transform:
   m_LocalScale: {x: 288, y: 144, z: 1}
   m_Children: []
   m_Father: {fileID: 1331634368}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1368814672
 SpriteRenderer:
@@ -6055,53 +6058,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1 &1399602233
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1399602235}
-  - component: {fileID: 1399602234}
-  m_Layer: 0
-  m_Name: Grid
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!156049354 &1399602234
-Grid:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1399602233}
-  m_Enabled: 1
-  m_CellSize: {x: 1, y: 0.5, z: 0}
-  m_CellGap: {x: 0, y: 0, z: 0}
-  m_CellLayout: 2
-  m_CellSwizzle: 0
---- !u!4 &1399602235
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1399602233}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 1}
-  m_Children:
-  - {fileID: 265132202}
-  - {fileID: 469805967}
-  - {fileID: 940764734}
-  - {fileID: 928696577}
-  m_Father: {fileID: 1331634368}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1514241447
 GameObject:
   m_ObjectHideFlags: 0
@@ -6131,11 +6087,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff636450088260348bf8f1e0af3b28b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxInAction: 50
+  maxInAction: 500
   isReady: 0
   Player: {fileID: 7023444635772566496, guid: 21ed80d6d82de02499ebb168787cc048, type: 3}
   Player2: {fileID: 7023444635772566496, guid: a983b475385b5b04e949e045abcb19a0, type: 3}
-  nbrOfPlayer: 250
+  nbrOfPlayer: 5000
 --- !u!4 &1514241449
 Transform:
   m_ObjectHideFlags: 0

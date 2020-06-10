@@ -40,40 +40,42 @@ public class IAManager : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (counter < maxInAction)
+        if (listAllIA != null)
         {
-            int indexAction = GetActionFree();
-            if (indexAction != -1)
+            if (counter < maxInAction)
             {
-               
-                this.listIAInAction[indexAction] = listAllIA[0];
-                this.listIAInAction[indexAction].isWaiting = false;
-                listAllIA.Remove(listAllIA[0]);
-                listAllIA.Add(this.listIAInAction[indexAction]);
-                counter++;
-            }
-        }
-
-        for (int i = 0; i < listIAInAction.Length-1; i++)
-        {
-            if (listIAInAction[i] != null)
-            {
-                listIAInAction[i].Move();
-                if (listIAInAction[i].isWaiting)
+                int indexAction = GetActionFree();
+                if (indexAction != -1)
                 {
-                    listIAInAction[i] = null;
-                    counter--;
+
+                    this.listIAInAction[indexAction] = listAllIA[0];
+                    this.listIAInAction[indexAction].isWaiting = false;
+                    listAllIA.Remove(listAllIA[0]);
+                    listAllIA.Add(this.listIAInAction[indexAction]);
+                    counter++;
                 }
             }
+
+            for (int i = 0; i < listIAInAction.Length - 1; i++)
+            {
+                if (listIAInAction[i] != null)
+                {
+                    listIAInAction[i].Move();
+                    if (listIAInAction[i].isWaiting)
+                    {
+                        listIAInAction[i] = null;
+                        counter--;
+                    }
+                }
+            }
+
+
+
+
+
+
+
         }
-        
-
-
-
-
-
-
-
         //if (listAllIA != null)
         //{
         //    if (listAllIA.Count != 0)
