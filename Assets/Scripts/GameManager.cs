@@ -1,23 +1,39 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using MapGame;
 using UnityEditor.Experimental;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    private Map map;
     private MapManager mapManager;
     private UIMapManager uiMapManager;
     private IAManager iaManager;
     private CameraManager cameraManager;
 
     private Vector2Int cell_select = new Vector2Int(0, 0);
-    
+
+
 
 
     public Search search;
 
     private int teamIsPlaying = 0;
 
+
+    private Vector2 convertTileCoordInScreenCoord(int tileCoordX, int tileCoordY)
+    {
+        Vector2 screenCoord;
+        screenCoord.x = (float)(((tileCoordX - tileCoordY)));
+        screenCoord.y = (float)(((tileCoordX + tileCoordY) * (0.5f)));
+        return screenCoord;
+    }
+
+    public void Select(Vector2 position)
+    {
+        mapManager.SelectCell(position, Color.cyan);
+    }
 
 
 
@@ -37,10 +53,12 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
         Generate();
         teamIsPlaying = 1;
     }
+
+
+
 
     public void Generate()
     {
@@ -50,7 +68,8 @@ public class GameManager : MonoBehaviour
         cameraManager = Camera.main.gameObject.GetComponent<CameraManager>();
         // mapManager.Clean();
         mapManager.GenerateMap();
-        iaManager.InstancePlayer(mapManager);
+        if(iaManager.isActiveAndEnabled)
+            iaManager.InstancePlayer(mapManager);
         cameraManager.RestartCamera();
     }
 

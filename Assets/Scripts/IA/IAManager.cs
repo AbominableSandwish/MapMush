@@ -129,8 +129,8 @@ public class IAManager : MonoBehaviour
     private Vector3 convertTileCoordInScreenCoord(int tileCoordX, int tileCoordY)
     {
         Vector3 screenCoord = new Vector3();
-        screenCoord.x = (float)(-0.25f + ((tileCoordX - tileCoordY)));
-        screenCoord.y = (float)(-4.80f + ((tileCoordX + tileCoordY) * (0.5f)));
+        screenCoord.x = (float)(((tileCoordX - tileCoordY)));
+        screenCoord.y = (float)(((tileCoordX + tileCoordY) * (0.5f)));
         return screenCoord;
     }
 
@@ -166,7 +166,7 @@ public class IAManager : MonoBehaviour
                     {
                         player = GameObject.Instantiate(Player2, GameObject.Find("UnityMap").transform);
                     }
-                    player.GetComponent<IAController>().SetIA(mapManager.GetMap());
+                    player.GetComponent<IAController>().Init(mapManager.GetMap());
                     player.GetComponent<IAController>().SetPosition(new Vector2Int(i, j));
                     Vector3 position = convertTileCoordInScreenCoord(i, j);
                     position += new Vector3(0, mapManager.GetMap().matrix[i, j].position.z);

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using MapGame;
 using UnityEngine;
 
 public class IAController : MonoBehaviour
@@ -20,7 +21,7 @@ public class IAController : MonoBehaviour
     private SpriteRenderer render;
     private UIMapManager Ui;
 
-    public void SetIA(Map map)
+    public void Init(Map map)
     {
         search = new Search();
         this.map = map;
@@ -40,6 +41,7 @@ public class IAController : MonoBehaviour
         search = new Search();
         cells = search.Research(position.x, position.y, 1);
 
+        if(render != null && cells[0].render != null)
         render.sortingOrder = cells[0].render.sortingOrder + 2;
     }
 
@@ -187,24 +189,17 @@ public class IAController : MonoBehaviour
 
                             map.matrix[position.x, position.y].SetObject(null);
 
+                                //TODO
                                 path[indexPath].SetObject(this.gameObject);
+
+
                                 position = new Vector2Int((int)path[indexPath].position.x, (int)path[indexPath].position.y);
                                 indexPath++;
 
                             if (this.indexPath != path.Count - 1)
                             {
                                 CalcNewPosition(indexPath);
-
                             }
-                            //VIEW
-                            // LAYOUT
-                            //render.sortingOrder =
-                            //    ((map.GetHeight() - (int)position.y) +
-                            //     (map.GetWidth() - (int)position.x)) * 3 + 2;
-
-
-
-
 
                             if (direction.x < 0)
                             {
@@ -217,15 +212,9 @@ public class IAController : MonoBehaviour
                                 render.sortingOrder = celltarget.render.sortingOrder + 2;
                             }
 
-
-
                             GetComponentInChildren<Animator>().SetBool("IsMoving", true);
                         }
                     }
-
-
-                    //Debug.Log("Distance " + (new Vector3(startPosition.x, startPosition.y) - transform.position).magnitude + " == " +distance);
-
                 }
                 else
                 {
@@ -236,29 +225,19 @@ public class IAController : MonoBehaviour
                         transform.position = new Vector3(nextPositon.x, nextPositon.y + nextHeight);
 
                         direction = Vector2.zero;
-
                         nextPositon = Vector2.zero;
-
                         cells = null;
 
                         GetComponentInChildren<Animator>().SetBool("IsMoving", false);
-
-                        time = Time.time + timeToWait;
-
                         isWaiting = true;
 
-
+                        time = Time.time + timeToWait;
 
                         render.sortingOrder = celltarget.render.sortingOrder + 2;
 
                         celltarget = null;
                         Ui.RemovePath(pathUI);
-
                         this.indexPath = 0;
-
-                        //render.sortingOrder =
-                        //    ((map.GetHeight() - (int) position.y) +
-                        //     (map.GetWidth() - (int) position.x)) * 3 + 2;
 
                         state = State.IDLE;
                         return;
@@ -290,8 +269,8 @@ public class IAController : MonoBehaviour
     private Vector2 convertTileCoordInScreenCoord(int tileCoordX, int tileCoordY)
     {
         Vector2 screenCoord;
-        screenCoord.x = (float)(-0.25f + ((tileCoordX - tileCoordY)));
-        screenCoord.y = (float)(-4.80f + ((tileCoordX + tileCoordY) * (0.5f)));
+        screenCoord.x = (float)(((tileCoordX - tileCoordY)));
+        screenCoord.y = (float)(((tileCoordX + tileCoordY) * (0.5f)));
         return screenCoord;
     }
 

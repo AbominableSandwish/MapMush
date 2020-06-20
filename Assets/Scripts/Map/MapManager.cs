@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq.Expressions;
 using System.Numerics;
 using System.Security.Cryptography;
+using MapGame;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UIElements;
@@ -28,26 +29,31 @@ public class MapManager : MonoBehaviour
 
     [Header("Prefab & Sprites")]
     [SerializeField] private GameObject prefabCell;
-    [SerializeField] private Sprite tile_Water;
-    [SerializeField] private Sprite tile_Dirt;
-    [SerializeField] private Sprite tile_Rock;
-    [SerializeField] private Sprite tile_HightRock;
+    [SerializeField] public Sprite tile_Water;
+    [SerializeField] public Sprite tile_Dirt;
+    [SerializeField] public Sprite tile_Rock;
+    [SerializeField] public Sprite tile_HightRock;
 
     [Header("Objects")] [SerializeField] private GameObject tree;
 
     [Header("Decoration")] [SerializeField]
     private GameObject prefab_deco;
     [SerializeField] private Sprite tile_flower_red;
-    [SerializeField] private Sprite tile_flower_blue;
+    [SerializeField] public Sprite tile_flower_blue;
     [SerializeField] private Sprite tile_flower_white;
 
     [SerializeField] private Sprite water;
 
+    [SerializeField] private bool viewIsOn = false;
+
     public void GenerateMap()
     {
         map = new Map();
-        map.Generate(height, width, offset_Z, noise);
-        Clean();
+        map.Generate(height, width, offset_Z, noise, this);
+        if (viewIsOn)
+        {
+            Clean();
+        }
 
         SaveIntoJson();
     }
@@ -55,9 +61,20 @@ public class MapManager : MonoBehaviour
     private Vector2 convertTileCoordInScreenCoord(int tileCoordX, int tileCoordY)
     {
         Vector2 screenCoord;
-        screenCoord.x = (float)(-0.25f + ((tileCoordX - tileCoordY)));
-        screenCoord.y = (float)(-4.80f + ((tileCoordX + tileCoordY) * (0.5f)));
+        screenCoord.x = (float)(((tileCoordX - tileCoordY)));
+        screenCoord.y = (float)(((tileCoordX + tileCoordY) * (0.5f)));
         return screenCoord;
+    }
+
+    public void SelectCell(Vector2 position, Color color)
+    {
+       // if(map)
+        map.matrix[(int)position.x, (int) position.y].render.color = color;
+    }
+
+    public void Update()
+    {
+        map.Update(Time.deltaTime);
     }
 
     public void Clean()
@@ -85,6 +102,8 @@ public class MapManager : MonoBehaviour
                 if (map.matrix[i, j].get_type() == 0)
                 {
                     cell.GetComponent<SpriteRenderer>().sprite = tile_Water;
+                    cell.transform.position = positionMap;
+
                 }
 
                 if (map.matrix[i, j].get_type() == 1)
@@ -96,35 +115,18 @@ public class MapManager : MonoBehaviour
                     float rdm = Random.Range(0.0f, 1.0f);
                     if (rdm < 0.994f && rdm > 0.95)
                     {
-                        GameObject deco = Instantiate(prefab_deco, cell.transform);
-                        deco.GetComponent<SpriteRenderer>().sortingOrder =
-                            cell.GetComponent<SpriteRenderer>().sortingOrder + 1;
-                        map.matrix[i, j].SetDecoration(deco.GetComponent<SpriteRenderer>());
-                        deco.transform.localPosition = Vector3.up * 0.5f;
-                        switch (Random.Range(0, 3))
-                        {
-                            case 1:
-                                deco.GetComponent<SpriteRenderer>().sprite = tile_flower_red;
-                                break;
-                            case 2:
-                                deco.GetComponent<SpriteRenderer>().sprite = tile_flower_blue;
-                                break;
-                            case 0:
-                                deco.GetComponent<SpriteRenderer>().sprite = tile_flower_white;
-                                break;
-                        }
 
                     }
 
                     if (rdm > 0.994f)
                     {
-                        //TREE
-                        GameObject gTree = Instantiate(tree, cell.transform);
-                        gTree.GetComponent<SpriteRenderer>().sortingOrder =
-                            cell.GetComponent<SpriteRenderer>().sortingOrder + 5;
-                        gTree.GetComponentsInChildren<SpriteRenderer>()[1].sortingOrder =
-                            gTree.GetComponent<SpriteRenderer>().sortingOrder;
-                        map.matrix[i, j].SetDecoration(gTree.GetComponent<SpriteRenderer>());
+                        ////TREE
+                        //GameObject gTree = Instantiate(tree, cell.transform);
+                        //gTree.GetComponent<SpriteRenderer>().sortingOrder =
+                        //    cell.GetComponent<SpriteRenderer>().sortingOrder + 5;
+                        //gTree.GetComponentsInChildren<SpriteRenderer>()[1].sortingOrder =
+                        //    gTree.GetComponent<SpriteRenderer>().sortingOrder;
+                        //map.matrix[i, j].SetDecoration(gTree.GetComponent<SpriteRenderer>());
                     }
                 }
 

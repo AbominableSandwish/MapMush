@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using MapGame;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Vector3 = UnityEngine.Vector3;
@@ -13,10 +14,19 @@ public class CameraManager : MonoBehaviour
         STATIC
     }
 
+    public static Vector3 convertTileCoordInScreenCoord(Vector3 position)
+    {
+        Vector3 screenCoord = new Vector3();
+        screenCoord.x = (float)(((position.x - position.y)));
+        screenCoord.y = (float)(((position.x + position.y) * (0.5f)));
+        return screenCoord;
+    }
+
     public Mode cameraMode = Mode.FREE;
 
     private HashPartition hash;
 
+    public bool IsOn = false;
     private Map map;
     [SerializeField] private int max_bucket;
     private Bucket[,] buckets;
@@ -25,21 +35,45 @@ public class CameraManager : MonoBehaviour
 
     [SerializeField] private float LengthVisibility;
 
+    public void ResetView()
+    {
+       
+        buckets = this.hash.GetBuckets();
+
+        for (int x = 0; x < (int)Mathf.Sqrt(max_bucket); x++)
+        {
+            for (int y = 0; y < (int)Mathf.Sqrt(max_bucket); y++)
+            {
+
+                foreach (var cell in buckets[x, y].cells)
+                {
+                    buckets[x, y].SetVisibilty(true);
+                    //cell.render.gameObject.SetActive(true);
+                }
+            }
+        }
+
+        hash = null;
+    }
+
     public void RestartCamera()
     {
-        hash = new HashPartition();
-        hash.cutMap(max_bucket, GameObject.Find("Map").GetComponent<MapManager>().GetMap());
-        ShowBucket();
-        distance = 3.5f;
+        if (IsOn)
+        {
+            hash = new HashPartition();
+            hash.cutMap(max_bucket, GameObject.Find("Map").GetComponent<MapManager>().GetMap());
+            ShowBucket();
+            distance = 3.5f;
+        }
     }
 
     public void ShowBucket()
     {
         buckets = this.hash.GetBuckets();
 
-        for (int x = 0; x < (int)(Mathf.Sqrt(max_bucket)); x++)
+        for (int x = 0; x < (int)Mathf.Sqrt(max_bucket); x++)
         {
-            for (int y = 0; y < (int)(Mathf.Sqrt(max_bucket)); y++)
+            for (int y = 0; y < (int)Mathf.Sqrt(max_bucket); y++)
             {
 
                 foreach (var cell in buckets[x, y].cells)
@@ -48,12 +82,6 @@ public class CameraManager : MonoBehaviour
                 }
             }
         }
-
-        foreach (var cell in buckets[0, 0].cells)
-        {
-            cell.render.gameObject.SetActive(true);
-        }
-
     }
 
     public class Bucket
@@ -117,6 +145,12 @@ public class CameraManager : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (!IsOn)
+        {
+            if(hash != null)
+                ResetView();
+        }
+
         if (direction.magnitude != 0.0f)
         {
             lastDirection = direction;
@@ -150,28 +184,38 @@ public class CameraManager : MonoBehaviour
         }
 
         Vector3 newPosition = Vector3.Lerp(transform.position,
-            transform.position + new Vector3(direction.x, direction.y) * Time.deltaTime * Velocity * acceleration, 1.0f);
+            transform.position + new Vector3(direction.x, direction.y) * Time.deltaTime * Velocity * acceleration,
+            1.0f);
         distance += (transform.position - newPosition).magnitude;
         transform.position = newPosition;
 
-        if (distance >= 3.5f)
+        if (IsOn)
         {
-            distance = 0.0f;
-            Vector3 positionCamera = this.transform.position + new Vector3(0, 0, 10);
-
-            for (int x = 0; x < (int)(Mathf.Sqrt(max_bucket)); x++)
+            if (hash == null)
             {
-                for (int y = 0; y < (int)(Mathf.Sqrt(max_bucket)); y++)
-                {
+                RestartCamera();
+                return;
+            }
 
-                    if ((this.buckets[x, y].position - positionCamera).magnitude <= LengthVisibility &&
-                        (this.buckets[x, y].position - positionCamera).magnitude >= -LengthVisibility)
+            if (distance >= 3.5f)
+            {
+                distance = 0.0f;
+                Vector3 positionCamera = this.transform.position + new Vector3(0, 0, 10);
+
+                for (int x = 0; x < (int)Mathf.Sqrt(max_bucket); x++)
+                {
+                    for (int y = 0; y < (int)Mathf.Sqrt(max_bucket); y++)
                     {
-                        this.buckets[x, y].SetVisibilty(true);
-                    }
-                    else
-                    {
-                        this.buckets[x, y].SetVisibilty(false);
+
+                        if ((this.buckets[x, y].position - positionCamera).magnitude <= LengthVisibility &&
+                            (this.buckets[x, y].position - positionCamera).magnitude >= -LengthVisibility)
+                        {
+                            this.buckets[x, y].SetVisibilty(true);
+                        }
+                        else
+                        {
+                            this.buckets[x, y].SetVisibilty(false);
+                        }
                     }
                 }
             }
@@ -193,25 +237,55 @@ public class CameraManager : MonoBehaviour
 
         public Bucket[,] cutMap(int max_bucket, Map map)
         {
-            this.buckets = new Bucket[(int)(map.GetWidth() / Mathf.Sqrt(max_bucket)), (int)(map.GetHeight() / Mathf.Sqrt(max_bucket))];
+            int area = (int)Mathf.Sqrt(max_bucket);
 
-            for (int x = 0; x < map.GetWidth(); x++)
+            this.buckets = new Bucket[area, area];
+            for (int j = 0; j < area; j++)
             {
-                for (int y = 0; y < map.GetHeight(); y++)
+                for (int i = 0; i < area; i++)
                 {
-                    int index_x = (int)(x / Mathf.Sqrt(max_bucket));
-                    int index_y = (int)(y / Mathf.Sqrt(max_bucket));
+                    int height = map.GetHeight();
+                    int width = map.GetWidth();
 
-                    if (this.buckets[index_x, index_y] == null)
-                        this.buckets[index_x, index_y] = new Bucket();
-                    this.buckets[index_x, index_y].cells.Add(map.matrix[x, y]);
+                    for (int y = 0 + (height / area) * j; y < height / area * (j+1); y++)
+                    {
+                        for (int x = 0 + (width / area) * i; x < width / area * (i+1); x++)
+                        {
+                            int index_x = (int)(x / (width / area));
+                            int index_y = (int)(y / (height/ area));
 
+
+                            if (this.buckets[j, i] == null)
+                                this.buckets[j, i] = new Bucket();
+                            this.buckets[j, i].cells.Add(map.matrix[x, y]);
+                        }
+                    }
                 }
             }
+            //int width = map.GetWidth();
+            //for (int x = 0; x < width; x++)
+            //{
+            //    int height = map.GetHeight();
+            //    for (int y = 0; y < height; y++)
+            //    {
+            //        int index_x = (int)(x / (width/ Mathf.Sqrt(max_bucket)));
+            //        int index_y = (int)(y / (height/ Mathf.Sqrt(max_bucket)));
 
-            for (int x = 0; x < (int)(Mathf.Sqrt(max_bucket)); x++)
+            //        if (index_x == max_bucket && index_y == max_bucket)
+            //        {
+            //            Debug.Log("Here");
+            //        }
+
+            //        if (this.buckets[index_x, index_y] == null)
+            //            this.buckets[index_x, index_y] = new Bucket();
+            //        this.buckets[index_x, index_y].cells.Add(map.matrix[x, y]);
+
+            //    }
+            //}
+
+            for (int x = 0; x < (int)Mathf.Sqrt(max_bucket); x++)
             {
-                for (int y = 0; y < (int)(Mathf.Sqrt(max_bucket)); y++)
+                for (int y = 0; y < (int)Mathf.Sqrt(max_bucket); y++)
                 {
                     Vector3 positionBucket = new Vector3();
                     foreach (var cell in buckets[x, y].cells)
@@ -222,17 +296,11 @@ public class CameraManager : MonoBehaviour
                     positionBucket /= buckets[x, y].cells.Count;
                     buckets[x, y].position = positionBucket;
                 }
-            }
+            } 
             return this.buckets;
         }
 
-        public Vector3 convertTileCoordInScreenCoord(Vector3 position)
-        {
-            Vector3 screenCoord = new Vector3();
-            screenCoord.x = (float)(-0.25f + ((position.x - position.y)));
-            screenCoord.y = (float)(-4.80f + ((position.x + position.y) * (0.5f)));
-            return screenCoord;
-        }
+       
 
     }
 
