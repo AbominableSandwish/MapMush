@@ -3,15 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 
 
 namespace MapGame
 {
+
+
     [Serializable]
     public class Map
     {
+
+        private Texture2D noiseTex;
+        private Color[] pix;
+
         private int counterPlant = 0;
 
         public int height;
@@ -68,92 +75,157 @@ namespace MapGame
             return moy;
         }
 
-        public void Generate(int height, int width, float offset_Z, int noise, MapManager manager)
+        public void Generate(int height, int width, float offset_Z, int noise, int freq, MapManager manager)
         {
             this.height = height;
             this.width = width;
+
+
             Cell[,] matrix = new Cell[width, height];
             for (int i = 0; i < width; i++)
             {
                 for (int j = 0; j < height; j++)
                 {
                     matrix[i, j] = new Cell(this, i, j);
-                    var rdmTmp = Random.Range(0, 100);
-                    matrix[i, j].set_type(1);
                     matrix[i, j].position.z = offset_Z;
                 }
             }
 
             this.matrix = matrix;
 
-            for (int i = 0; i < noise * 100; i++)
+            for (int i = 0; i < noise; i++)
             {
+                int xOrg = Random.Range(1, 5000);
 
-                Search bfs = new Search();
-
-                int x = Random.Range(0, this.width);
-                int y = Random.Range(0, this.height);
-                int z;
-                if (matrix[x, y].position.z < 0)
+                for (int x = 0; x < this.width; x++)
                 {
-                    z = 8;
-                }
-                else
-                {
-                    z = Random.Range(3, 6 - (int) matrix[x, y].position.z);
+                    for (int y = 0; y < this.height; y++)
+                    {
+                        double nx = ((xOrg / 2.0f)+x) / width, ny = ((this.height / 2.0f) + y) / this.height;
+                        var perlin =  1* Mathf.PerlinNoise((float)nx*3, (float)ny*3) 
+                            + 0.5f * Mathf.PerlinNoise((float)nx * 6, (float)ny * 6)
+                            + 0.25f * Mathf.PerlinNoise((float)nx * 12, (float)ny * 12);
+                        this.matrix[x,y].position += new Vector3(0, 0, perlin/noise);
+
+                    }
                 }
 
-                List<Cell> cells = bfs.Research(x, y, z);
-                counter += Time.deltaTime;
+                //Search bfs = new Search();
 
-                foreach (var cell in cells)
-                {
-                    cell.position += new Vector3(0, 0, PerlinNoiseMap(0, 0));
-                }
+                //int x = Random.Range(0, this.width);
+                //int y = Random.Range(0, this.height);
+                //int z;
+                //if (matrix[x, y].position.z < 0)
+                //{
+                //    z = 8;
+                //}
+                //else
+                //{
+                //    z = Random.Range(3, 6 - (int) matrix[x, y].position.z);
+                //}
+
+                //List<Cell> cells = bfs.Research(x, y, z);
+                //counter += Time.deltaTime;
+
+                //foreach (var cell in cells)
+                //{
+                //    cell.position += new Vector3(0, 0, PerlinNoiseMap(0, 0));
+                //}
             }
+
+            // Set up the texture and a Color array to hold pixels during processing.
+            noiseTex = new Texture2D(width, height);
+            pix = new Color[noiseTex.width * noiseTex.height];
 
             for (int i = 0; i < width; i++)
             {
                 for (int j = 0; j < height; j++)
                 {
                     Cell cell = this.matrix[i, j];
-                    Texture2D texture = null;
-                    Rect rect = new Rect();
 
-                    if (cell.position.z < 0.0f)
+                    float z= 0.0f;
+
+                    if (cell.position.z < 0.7f)
                     {
+                        z = 0;
                         cell.set_type(0);
-                        texture = manager.tile_Water.texture;
-                        rect = new Rect(8, 1045, 80, 55);
+                        pix[(int)j * noiseTex.width + (int)i] = new Color(0,0,1);
                     }
 
-                    if (cell.position.z >= 0.0f && cell.position.z < 2.0f)
+
+                    if (cell.position.z >= 0.7f && cell.position.z < 0.85f)
                     {
                         cell.set_type(1);
-                        texture = manager.tile_Dirt.texture;
-                        rect = new Rect(8, 1591, 80, 70);
+                        z = 0.725f;
+                        pix[(int)j * noiseTex.width + (int)i] = new Color(0, 1, 0);
+                        //rect = new Rect(8, 1591, 80, 70);
                     }
 
-                    if (cell.position.z >= 2.0f && cell.position.z < 3.5f)
-                    {
-                        cell.set_type(2);
-                        texture = manager.tile_Rock.texture;
-                        rect = new Rect(8, 1398, 80, 70);
-                    }
-
-                    if (cell.position.z >= 3.5f && cell.position.z <= 15.0f)
-                    {
-                        cell.set_type(3);
-                        texture = manager.tile_HightRock.texture;
-                        rect = new Rect(8, 1178, 80, 70);
-                    }
-
-                    cell.AddComponent(new Graphic(cell, new ObjectTransform(new Vector2((int)cell.position.x, (int)cell.position.y)), rect,texture));
-                }
               
+                    if (cell.position.z >= 0.85f && cell.position.z < 0.97f)
+                    {
+                        if(cell.position.z >= 0.85f && cell.position.z < 0.90f)
+                            z = 0.725f*2;
+                        if (cell.position.z >= 0.90f && cell.position.z < 0.97f)
+                            z = 0.725f*3;
+                        cell.set_type(2);
+                        pix[(int)j * noiseTex.width + (int)i] = new Color(0.0f, 0.7f, 0.0f);
+                        //rect = new Rect(8, 1398, 80, 70);
+                    }
+
+                    if (cell.position.z >= 0.97f && cell.position.z < 1.03f)
+                    {
+                        z = 0.725f*4;
+                        cell.set_type(2);
+                        pix[(int)j * noiseTex.width + (int)i] = new Color(0.0f, 0.5f, 0.0f);
+                        //rect = new Rect(8, 1398, 80, 70);
+                    }
+
+                    if (cell.position.z >= 1.03f && cell.position.z < 1.1f)
+                    {
+                        if (cell.position.z >= 1.03f && cell.position.z < 1.05f)
+                            z = 0.725f * 5;
+                        if (cell.position.z >= 1.05f && cell.position.z < 1.07f)
+                            z = 0.725f * 6;
+                        if (cell.position.z >= 1.07f && cell.position.z < 1.09f)
+                            z = 0.725f * 7;
+                        if (cell.position.z >= 1.09f && cell.position.z < 1.1f)
+                            z = 0.725f * 8;
+
+                        cell.set_type(3);
+                        pix[(int)j * noiseTex.width + (int)i] = new Color(0.5f, 0.5f, 0.5f);
+                        //rect = new Rect(8, 1398, 80, 70);
+                    }
+
+                    if (cell.position.z >= 1.1f)
+                    {
+                        pix[(int)j * noiseTex.width + (int)i] = new Color(1, 1, 1);
+                        if (cell.position.z >= 1.1f && cell.position.z < 1.12f)
+                            z = 0.725f * 9;
+                        if (cell.position.z >= 1.12f && cell.position.z < 1.14f)
+                            z = 0.725f * 10;
+                        if (cell.position.z >= 1.14f && cell.position.z < 1.16f)
+                            z = 0.725f * 11;
+                        if (cell.position.z >= 1.16f && cell.position.z < 1.18f)
+                            z = 0.725f * 12;
+                        if (cell.position.z >= 1.18f)
+                            z = 0.725f * 13;
+                        cell.set_type(3);
+                        //rect = new Rect(8, 1178, 80, 70);
+                    }
+
+                    cell.position.z = z;
+                }
+
             }
 
-            GeneratePlants(manager);
+
+            GameObject.Find("MiniMap").GetComponent<Image>().material.mainTexture = noiseTex;
+            // Copy the pixel data to the texture and load it into the GPU.
+            noiseTex.SetPixels(pix);
+            noiseTex.Apply();
+
+            //GeneratePlants(manager);
         }
 
         public void GeneratePlants(MapManager manager)

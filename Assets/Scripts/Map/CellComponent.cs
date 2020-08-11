@@ -32,6 +32,11 @@ namespace MapGame
 
         }
 
+        public virtual void Remove()
+        {
+
+        }
+
         public virtual GameObject Draw()
         {
             return null;
@@ -39,7 +44,7 @@ namespace MapGame
 
         public virtual void Clean()
         {
-
+            
         }
     }
 
@@ -71,7 +76,7 @@ namespace MapGame
 
     class IsMoving : CellComponent
     {
-        private IAController iaController;
+        //private IAController iaController;
 
         public IsMoving(Cell parent) : base(parent) 
         {
@@ -109,13 +114,13 @@ namespace MapGame
 
     public class Graphic : CellComponent
     {
-        private Texture2D _texture;
+        private bool isDynamic = false;
+        private BufferGraphic buffer;
         private int _sortingLayer;
 
-        public ObjectTransform _transform;
-        public GameObject _render;
+        public int _texture;
 
-        public Rect _rect;
+        public Transform obj;
 
         enum Type
         {
@@ -123,11 +128,21 @@ namespace MapGame
             DECORATION
         }
 
-        public Graphic(Cell parent, ObjectTransform transform , Rect rect = new Rect(), Texture2D texture = null) : base(parent)
+        public Graphic(BufferGraphic buffer, Cell parent, int texture) : base(parent)
         {
+        
+            this.buffer = buffer;
+            
             _texture = texture;
-            _rect = rect;
-            _transform = transform;
+
+            _sortingLayer = (int)((this._parent._parent.height - _parent.position.y) + (this._parent._parent.width - _parent.position.x))  + 1;
+
+                Vector2 resultPos =
+                    convertTileCoordInScreenCoord((int)parent.position.x, (int) (parent.position.y)) +
+                    new Vector2(0, _parent.position.z);
+                Vector3 ScreenPos = new Vector3(resultPos.x, resultPos.y);
+                obj = buffer.AddGameObject(ScreenPos, _texture);
+
 
         }
 
@@ -141,20 +156,26 @@ namespace MapGame
 
         }
 
+        public override void Remove()
+        {
+            this._texture = 0;
+
+            Vector2 resultPos = Vector2.zero;
+            buffer.RemoveObjectGraphic(obj);
+            this.buffer = null;
+            obj = null;
+        }
+
         public override GameObject Draw()
         {
-            _render = new GameObject("GameObject");
-            _render.AddComponent<SpriteRenderer>();
-            _render.transform.localScale= new Vector3(2.5f,2.5f,1);
-            _render.GetComponent<SpriteRenderer>().sprite = Sprite.Create(_texture, _rect, Vector2.zero);
-            _render.GetComponent<SpriteRenderer>().sortingOrder = (int)((this._parent._parent.height - _parent.position.y) + (this._parent._parent.width - _parent.position.x)) * 5 + 1;
-            _render.transform.position = convertTileCoordInScreenCoord((int)_transform._position.x, (int)(_transform._position.y)) + new Vector2(0, _parent.position.z);
-            return _render;
+            if(!isDynamic)
+                return null;
+            return null;
         }
 
         public override void Clean()
         {
-            MapManager.Destroy(_render);
+         
         }
 
         private static Vector2 convertTileCoordInScreenCoord(int tileCoordX, int tileCoordY)
@@ -164,14 +185,11 @@ namespace MapGame
             screenCoord.y = (float)(((tileCoordX + tileCoordY) * (0.5f)));
             return screenCoord;
         }
-
-
-
     }
 
     class IsBlocking : CellComponent
     {
-        private IAController iaController;
+        //private IAController iaController;
 
         public IsBlocking(Cell parent) : base(parent)
         {
@@ -223,7 +241,7 @@ namespace MapGame
             _parent = parent;
             _color = color;
             
-            _render = new Graphic(_parent, new ObjectTransform(position, dimension), rect, texture);
+           // _render = new Graphic(_parent, new ObjectTransform(position, dimension), rect, texture);
         }
 
         public void SetColor(Color color)
