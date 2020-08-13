@@ -10,8 +10,8 @@ public class GameManager : MonoBehaviour
     private Map map;
     private MapManager mapManager;
     public BufferGraphic bufferGraphic;
-    // private UIMapManager uiMapManager;
-    //private IAManager iaManager;
+   // private UIMapManager uiMapManager;
+    private IAManager iaManager;
     private CameraManager cameraManager;
 
     private Vector2Int cell_select = new Vector2Int(0, 0);
@@ -67,14 +67,14 @@ public class GameManager : MonoBehaviour
     {
         mapManager = GameObject.Find("Map").GetComponent<MapManager>();
        // uiMapManager = GameObject.Find("Map").GetComponent<UIMapManager>();
-      //  iaManager = GameObject.Find("IAManager").GetComponent<IAManager>();
+        iaManager = GameObject.Find("IAManager").GetComponent<IAManager>();
         cameraManager = Camera.main.gameObject.GetComponent<CameraManager>();
 
         bufferGraphic = new BufferGraphic(mapManager);
 
         mapManager.GenerateMap(cameraManager);
-        //if(iaManager.isActiveAndEnabled)
-        //    iaManager.InstancePlayer(mapManager);
+        if (iaManager.isActiveAndEnabled)
+            iaManager.InstancePlayer(mapManager);
         cameraManager.RestartCamera(bufferGraphic);
     }
 

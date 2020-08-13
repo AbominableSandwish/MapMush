@@ -31,6 +31,8 @@ public class MapManager : MonoBehaviour
     [SerializeField] private int nbrOfTree;
 
     [Header("Prefab & Sprites")]
+
+    [SerializeField] public Material material;
     [SerializeField] public GameObject prefabCell;
     [SerializeField] public Sprite tile_Water;
     [SerializeField] public Sprite tile_Dirt;
@@ -73,152 +75,66 @@ public class MapManager : MonoBehaviour
     //    map.matrix[(int)position.x, (int) position.y].color = color;
     //}
 
+    enum  GameTime
+    {
+        DAY,
+        NIGHT
+    }
+
+    private float nextTime = Time.time + 120;
+
+    private GameTime gameTime = GameTime.DAY;
+    
+
     public void Update()
     {
         if (map != null)
         {
-            map.Update(Time.deltaTime);
-        }
+            float time = Time.deltaTime;
+            map.Update(time);
 
-
-    }
-
-    public void Draw()
-    {
-        objects = new List<GameObject>();
-        Debug.Log(cameraManager.bucketsVîsible.Count);
-
-        foreach (var bucket in cameraManager.bucketsVîsible)
-        {
-            foreach (var cell in bucket.cells)
+            switch (gameTime)
             {
-                foreach (var component in cell._components)
-                {
-                    if (component.GetType() == typeof(Graphic))
+                case GameTime.DAY:
+                    if (Time.time >= nextTime)
                     {
-                        Debug.Log("Component");
+                        nextTime += 120;
+                        gameTime = GameTime.NIGHT;
                     }
-                }
+
+                    if (material.color.r < 1.0f)
+                    {
+                        material.color += new Color(1.0f, 1.0f, 1.0f, 0.0f) * time / 20.0f;
+                        
+                    }
+
+                    if (Camera.main.backgroundColor.b < 1.0f)
+                    {
+                        Camera.main.backgroundColor += new Color(0.5f, 0.5f, 1.0f, 0.0f) * time / 20.0f;
+                    }
+                    break;
+                case GameTime.NIGHT:
+                    if (Time.time >= nextTime)
+                    {
+                        nextTime += 120;
+                        gameTime = GameTime.DAY;
+                    }
+
+
+                    if (material.color.r > 0.2f)
+                    {
+                        material.color -= new Color(1.0f, 1.0f, 1.0f, 0.0f) * time / 20.0f;
+                    }
+
+                    if (Camera.main.backgroundColor.b > 0.22f)
+                    {
+                        Camera.main.backgroundColor -= new Color(0.5f, 0.5f, 1.0f, 0.0f) * time / 20.0f;
+                    }
+                    break;
             }
+           
         }
-        
 
-        ////todo
-        //for (int i = 0; i < map.GetWidth(); i++)
-        //{
-        //    for (int j = 0; j < map.GetWidth(); j++)
-        //    {
-        //        Vector2 positionCell = convertTileCoordInScreenCoord(i, j);
-        //        Vector3 positionMap = new Vector3(positionCell.x, positionCell.y, 0) + new Vector3(0, 0);
-        //        var cell = Instantiate(prefabCell, this.transform);
-        //        cell.transform.position = positionMap + new Vector3(0, map.matrix[i, j].position.z);
-        //        cell.GetComponent<SpriteRenderer>().sortingOrder = ((map.GetHeight() - j) + (map.GetWidth() - i)) * 5;
-
-        //        if (map.matrix[i, j].get_type() == 0)
-        //        {
-        //            cell.GetComponent<SpriteRenderer>().sprite = tile_Water;
-        //            cell.transform.position = positionMap;
-
-        //        }
-
-        //        if (map.matrix[i, j].get_type() == 1)
-        //        {
-        //            cell.GetComponent<SpriteRenderer>().sprite = tile_Dirt;
-        //            float color = +0.9f - 0.1f * (shadow / map.matrix[i, j].position.z / 2);
-        //            cell.GetComponent<SpriteRenderer>().color = new Color(color, color, color, 1);
-
-        //            float rdm = Random.Range(0.0f, 1.0f);
-        //            if (rdm < 0.994f && rdm > 0.95)
-        //            {
-
-        //            }
-
-        //            if (rdm > 0.994f)
-        //            {
-        //                ////TREE
-        //                //GameObject gTree = Instantiate(tree, cell.transform);
-        //                //gTree.GetComponent<SpriteRenderer>().sortingOrder =
-        //                //    cell.GetComponent<SpriteRenderer>().sortingOrder + 5;
-        //                //gTree.GetComponentsInChildren<SpriteRenderer>()[1].sortingOrder =
-        //                //    gTree.GetComponent<SpriteRenderer>().sortingOrder;
-        //                //map.matrix[i, j].SetDecoration(gTree.GetComponent<SpriteRenderer>());
-        //            }
-        //        }
-
-        //        if (map.matrix[i, j].get_type() == 2)
-        //        {
-        //            cell.GetComponent<SpriteRenderer>().sprite = tile_Rock;
-        //            float color = +0.9f - 0.1f * (shadow / map.matrix[i, j].position.z / 2);
-        //            cell.GetComponent<SpriteRenderer>().color = new Color(color, color, color, 1);
-        //        }
-
-        //        if (map.matrix[i, j].get_type() == 3)
-        //        {
-        //            cell.GetComponent<SpriteRenderer>().sprite = tile_HightRock;
-        //        }
-
-        //        if (map.matrix[i, j].render == null)
-        //            map.matrix[i, j].SetSpriteRender(cell.GetComponent<SpriteRenderer>());
-
-        //        objects.Add(cell);
-        //    }
-        //}
-
-        //for (int i = 0; i < map.GetWidth(); i++)
-        //{
-        //    for (int nbr = 1; nbr < 6; nbr++)
-        //    {
-        //        if (map.matrix[i, 0].get_type() != 0)
-        //        {
-        //            Vector2 positionCell = convertTileCoordInScreenCoord(i, 0);
-        //            Vector3 positionMap = new Vector3(positionCell.x, positionCell.y, 0) + new Vector3(0, -0.38f * nbr);
-        //            var cell = Instantiate(prefabCell, this.transform);
-        //            cell.transform.position = positionMap + new Vector3(0, map.matrix[i, 0].position.z);
-        //            cell.GetComponent<SpriteRenderer>().sortingOrder = map.matrix[i, 0].render.sortingOrder - 1 - nbr;
-        //            cell.GetComponent<SpriteRenderer>().sprite = tile_Rock;
-        //            cell.GetComponent<SpriteRenderer>().color = map.matrix[i, 0].render.color;
-        //        }
-        //        else
-        //        {
-        //            Vector2 positionCell = convertTileCoordInScreenCoord(i, 0);
-        //            Vector3 positionMap = new Vector3(positionCell.x, positionCell.y, 0) + new Vector3(+0.5f, -0.38f * nbr);
-        //            var cell = Instantiate(prefabCell, this.transform);
-        //            cell.transform.position = positionMap + new Vector3(0, map.matrix[i, 0].position.z);
-        //            cell.GetComponent<SpriteRenderer>().sortingOrder = map.matrix[i, 0].render.sortingOrder + 2 - nbr;
-        //            cell.GetComponent<SpriteRenderer>().sprite = water;
-        //            cell.GetComponent<SpriteRenderer>().flipX = true;
-        //        }
-
-        //    }
-        //}
-
-        //for (int j = 0; j < map.GetWidth(); j++)
-        //{
-        //    for (int nbr = 1; nbr < 6; nbr++)
-        //    {
-        //        if (map.matrix[0, j].get_type() != 0)
-        //        {
-
-        //            Vector2 positionCell = convertTileCoordInScreenCoord(0, j);
-        //            Vector3 positionMap = new Vector3(positionCell.x, positionCell.y, 0) + new Vector3(0, -0.38f * nbr);
-        //            var cell = Instantiate(prefabCell, this.transform);
-        //            cell.transform.position = positionMap + new Vector3(0, map.matrix[0, j].position.z);
-        //            cell.GetComponent<SpriteRenderer>().sortingOrder = map.matrix[0, j].render.sortingOrder - 1 - nbr;
-        //            cell.GetComponent<SpriteRenderer>().sprite = tile_Rock;
-        //            cell.GetComponent<SpriteRenderer>().color = map.matrix[0, j].render.color;
-
-        //        }
-        //        else
-        //        {
-        //            Vector2 positionCell = convertTileCoordInScreenCoord(0, j);
-        //            Vector3 positionMap = new Vector3(positionCell.x, positionCell.y, 0) + new Vector3(-0.5f, -0.38f * nbr);
-        //            var cell = Instantiate(prefabCell, this.transform);
-        //            cell.transform.position = positionMap + new Vector3(0, map.matrix[0, j].position.z);
-        //            cell.GetComponent<SpriteRenderer>().sortingOrder = map.matrix[0, j].render.sortingOrder + 2 - nbr;
-        //            cell.GetComponent<SpriteRenderer>().sprite = water;
-        //        }
-        //    }
-        //}
     }
 
     public void Clean()

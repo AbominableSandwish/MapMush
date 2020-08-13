@@ -5181,8 +5181,8 @@ MonoBehaviour:
   cameraMode: 0
   IsOn: 1
   max_bucket: 1536
-  LengthVisibility: 35
-  Velocity: 8
+  LengthVisibility: 30
+  Velocity: 12
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -5193,7 +5193,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.5058824, g: 0.7882353, b: 0.9764706, a: 0}
+  m_BackGroundColor: {r: 0, g: 0.09129648, b: 0.33962262, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -5234,7 +5234,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 100, y: 100, z: -10}
+  m_LocalPosition: {x: 0, y: 545, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2070057927}
@@ -5968,10 +5968,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   height: 576
   width: 576
-  noise: 2
+  noise: 1
   freq: 1
-  offset_Z: 0
+  offset_Z: -0.2
   nbrOfTree: 0
+  material: {fileID: 2100000, guid: e7ee6485cb79ea04a98022e07dad961d, type: 2}
   prefabCell: {fileID: 5941278371581202619, guid: 59ef71a2e73dfd8428b42d8d3cd61ce2,
     type: 3}
   tile_Water: {fileID: -5800792307412622259, guid: 44292580753d5834982e6046a3291598,
@@ -6111,11 +6112,16 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1514241447}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ff636450088260348bf8f1e0af3b28b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxInAction: 500
+  isReady: 1
+  Player: {fileID: 7023444635772566496, guid: a983b475385b5b04e949e045abcb19a0, type: 3}
+  Player2: {fileID: 7023444635772566496, guid: 21ed80d6d82de02499ebb168787cc048, type: 3}
+  nbrOfPlayer: 20
 --- !u!4 &1514241449
 Transform:
   m_ObjectHideFlags: 0

@@ -88,6 +88,7 @@ namespace MapGame
                 {
                     matrix[i, j] = new Cell(this, i, j);
                     matrix[i, j].position.z = offset_Z;
+                  
                 }
             }
 
@@ -106,7 +107,7 @@ namespace MapGame
                             + 0.5f * Mathf.PerlinNoise((float)nx * 6, (float)ny * 6)
                             + 0.25f * Mathf.PerlinNoise((float)nx * 12, (float)ny * 12);
                         this.matrix[x,y].position += new Vector3(0, 0, perlin/noise);
-
+                      
                     }
                 }
 
@@ -175,7 +176,12 @@ namespace MapGame
 
                     if (cell.position.z >= 0.97f && cell.position.z < 1.03f)
                     {
-                        z = 0.725f*4;
+                        if (cell.position.z >= 0.97f && cell.position.z < 0.99f)
+                            z = 0.725f * 4;
+                        if (cell.position.z >= 0.99f && cell.position.z < 1.01f)
+                            z = 0.725f * 5;
+                        if (cell.position.z >= 1.01f && cell.position.z < 1.03f)
+                            z = 0.725f * 6;
                         cell.set_type(2);
                         pix[(int)j * noiseTex.width + (int)i] = new Color(0.0f, 0.5f, 0.0f);
                         //rect = new Rect(8, 1398, 80, 70);
@@ -184,13 +190,13 @@ namespace MapGame
                     if (cell.position.z >= 1.03f && cell.position.z < 1.1f)
                     {
                         if (cell.position.z >= 1.03f && cell.position.z < 1.05f)
-                            z = 0.725f * 5;
-                        if (cell.position.z >= 1.05f && cell.position.z < 1.07f)
-                            z = 0.725f * 6;
-                        if (cell.position.z >= 1.07f && cell.position.z < 1.09f)
                             z = 0.725f * 7;
-                        if (cell.position.z >= 1.09f && cell.position.z < 1.1f)
+                        if (cell.position.z >= 1.05f && cell.position.z < 1.07f)
                             z = 0.725f * 8;
+                        if (cell.position.z >= 1.07f && cell.position.z < 1.09f)
+                            z = 0.725f * 9;
+                        if (cell.position.z >= 1.09f && cell.position.z < 1.1f)
+                            z = 0.725f * 10;
 
                         cell.set_type(3);
                         pix[(int)j * noiseTex.width + (int)i] = new Color(0.5f, 0.5f, 0.5f);
@@ -201,15 +207,15 @@ namespace MapGame
                     {
                         pix[(int)j * noiseTex.width + (int)i] = new Color(1, 1, 1);
                         if (cell.position.z >= 1.1f && cell.position.z < 1.12f)
-                            z = 0.725f * 9;
-                        if (cell.position.z >= 1.12f && cell.position.z < 1.14f)
-                            z = 0.725f * 10;
-                        if (cell.position.z >= 1.14f && cell.position.z < 1.16f)
-                            z = 0.725f * 11;
-                        if (cell.position.z >= 1.16f && cell.position.z < 1.18f)
                             z = 0.725f * 12;
-                        if (cell.position.z >= 1.18f)
+                        if (cell.position.z >= 1.12f && cell.position.z < 1.14f)
                             z = 0.725f * 13;
+                        if (cell.position.z >= 1.14f && cell.position.z < 1.16f)
+                            z = 0.725f * 14;
+                        if (cell.position.z >= 1.16f && cell.position.z < 1.18f)
+                            z = 0.725f * 15;
+                        if (cell.position.z >= 1.18f)
+                            z = 0.725f * 16;
                         cell.set_type(3);
                         //rect = new Rect(8, 1178, 80, 70);
                     }
@@ -238,23 +244,23 @@ namespace MapGame
                     {
                         matrix[i, j].AddComponent(new Plant(matrix[i, j], new Vector2(i, j), new Vector2(1, 0), Color.blue, new Rect(108, 299, 22, 23), manager.tile_flower_blue.texture));
                     }
-                    //float rdm = Random.Range(0.0f, 1.0f);
-                    //if (rdm < 0.994f && rdm > 0.95)
-                    //{
-                       
-                    //}
+                    float rdm = Random.Range(0.0f, 1.0f);
+                    if (rdm < 0.994f && rdm > 0.95)
+                    {
 
-                    //if (rdm > 0.994f)
-                    //{
+                    }
 
-                    //    ////TREE
-                    //    //GameObject gTree = Instantiate(tree, cell.transform);
-                    //    //gTree.GetComponent<SpriteRenderer>().sortingOrder =
-                    //    //    cell.GetComponent<SpriteRenderer>().sortingOrder + 5;
-                    //    //gTree.GetComponentsInChildren<SpriteRenderer>()[1].sortingOrder =
-                    //    //    gTree.GetComponent<SpriteRenderer>().sortingOrder;
-                    //    //map.matrix[i, j].SetDecoration(gTree.GetComponent<SpriteRenderer>());
-                    //}
+                    if (rdm > 0.994f)
+                    {
+
+                        ////TREE
+                        //GameObject gTree = Instantiate(tree, cell.transform);
+                        //gTree.GetComponent<SpriteRenderer>().sortingOrder =
+                        //    cell.GetComponent<SpriteRenderer>().sortingOrder + 5;
+                        //gTree.GetComponentsInChildren<SpriteRenderer>()[1].sortingOrder =
+                        //    gTree.GetComponent<SpriteRenderer>().sortingOrder;
+                        //manager.GetMap().matrix[i, j].SetDecoration(gTree.GetComponent<SpriteRenderer>());
+                    }
                 }
             }
         }

@@ -65,9 +65,9 @@
 //        List<Transform> view = new List<Transform>();
 //        foreach (Cell cell in this.paths[index])
 //        {
-          
+
 //            Vector2 positionCell = convertTileCoordInScreenCoord((int)cell.position.x, (int)cell.position.y);
-//            Vector3 positionMap = new Vector3(positionCell.x, positionCell.y, 0) + new Vector3(0, GetComponent<MapManager>().GetMap().matrix[(int)cell.position.x, (int)cell.position.y].position.z+0.75f);
+//            Vector3 positionMap = new Vector3(positionCell.x, positionCell.y, 0) + new Vector3(0, GetComponent<MapManager>().GetMap().matrix[(int)cell.position.x, (int)cell.position.y].position.z + 0.75f);
 //            var cellUI = Instantiate(prefab, positionMap, Quaternion.identity, transform);
 //            cellUI.GetComponent<SpriteRenderer>().sortingOrder =
 //                ((height - (int)cell.position.y) +

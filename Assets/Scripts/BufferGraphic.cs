@@ -12,9 +12,35 @@ public class BufferGraphic
 
     public int nbrMaxTransform = 20000;
 
+    private Material material;
+
+    class RenderGraphic
+    {
+        private int id;
+        private Transform tranform;
+
+        public RenderGraphic(Transform transform, int id)
+        {
+            this.tranform = transform;
+            this.id = id;
+        }
+
+        public Transform GetTransform()
+        {
+            return this.tranform;
+        }
+
+        public void SetTransform(Transform transform)
+        {
+            this.tranform = transform;
+        }
+
+    }
+
     public List<Transform> bufferTransforms;
 
-    public List<Transform> gameObjectsOnHold;
+    public Queue<Transform> gameObjectsOnHold;
+
 
     public List<Transform> gameObjectsUsed;
 
@@ -25,12 +51,14 @@ public class BufferGraphic
     public BufferGraphic(MapManager mapManager)
     {
         this.mapManager = mapManager;
-        gameObjectsOnHold = new List<Transform>();
+        gameObjectsOnHold = new Queue<Transform>();
         transformParentBuffer = GameObject.Find("MapBuffer").transform;
         transformParentMap = GameObject.Find("Map").transform;
 
         //Buffer
         bufferTransforms = new List<Transform>();
+
+        material = mapManager.material;
       
         GameObject objW;
         string nameW = "prefab_Water";
@@ -40,6 +68,7 @@ public class BufferGraphic
         objW.GetComponent<SpriteRenderer>().sprite = this.mapManager.tile_Water;
         objW.GetComponent<SpriteRenderer>().drawMode = SpriteDrawMode.Sliced;
         objW.GetComponent<SpriteRenderer>().size = new Vector2(2, 1.75f);
+        objW.GetComponent<SpriteRenderer>().material = material;
         bufferTransforms.Add(objW.transform);
 
         {
@@ -51,6 +80,7 @@ public class BufferGraphic
             obj.GetComponent<SpriteRenderer>().sprite = this.mapManager.tile_Dirt;
             obj.GetComponent<SpriteRenderer>().drawMode = SpriteDrawMode.Sliced;
             obj.GetComponent<SpriteRenderer>().size = new Vector2(2, 1.75f);
+            obj.GetComponent<SpriteRenderer>().material = material;
             bufferTransforms.Add(obj.transform);
         }
         {
@@ -62,6 +92,7 @@ public class BufferGraphic
             obj.GetComponent<SpriteRenderer>().sprite = this.mapManager.tile_Rock;
             obj.GetComponent<SpriteRenderer>().drawMode = SpriteDrawMode.Sliced;
             obj.GetComponent<SpriteRenderer>().size = new Vector2(2, 1.75f);
+            obj.GetComponent<SpriteRenderer>().material = material;
             bufferTransforms.Add(obj.transform);
         }
         {
@@ -73,6 +104,7 @@ public class BufferGraphic
             obj.GetComponent<SpriteRenderer>().sprite = this.mapManager.tile_HightRock;
             obj.GetComponent<SpriteRenderer>().drawMode = SpriteDrawMode.Sliced;
             obj.GetComponent<SpriteRenderer>().size = new Vector2(2, 1.75f);
+            obj.GetComponent<SpriteRenderer>().material = material;
             bufferTransforms.Add(obj.transform);
         }
 
@@ -87,7 +119,8 @@ public class BufferGraphic
             obj.AddComponent<SpriteRenderer>();
             obj.GetComponent<SpriteRenderer>().drawMode = SpriteDrawMode.Sliced;
             obj.GetComponent<SpriteRenderer>().size = new Vector2(2, 1.75f);
-            gameObjectsOnHold.Add(obj.transform);
+            obj.GetComponent<SpriteRenderer>().material = material;
+            gameObjectsOnHold.Enqueue(obj.transform);
         }
 
         
@@ -101,11 +134,9 @@ public class BufferGraphic
 
     private const int IsometricRangePerYUnit = 10;
 
-    public Transform AddGameObject(Vector3 position, int type)
+    public Transform AddGameObject(Vector3 position, int type, int sortingLayer)
     {
-        Transform transform = gameObjectsOnHold[0];
-        gameObjectsOnHold.Remove(gameObjectsOnHold[0]);
-
+        Transform transform = gameObjectsOnHold.Dequeue();
 
         transform.parent = transformParentMap;
         transform.localPosition = position;
@@ -137,9 +168,9 @@ public class BufferGraphic
         render.drawMode = SpriteDrawMode.Sliced;
         render.size= new Vector2(2, 1.75f);
 
-        
 
-        render.sortingOrder = -(int)(transform.position.y * IsometricRangePerYUnit);
+
+        render.sortingOrder = sortingLayer;//-(int)(transform.position.y * IsometricRangePerYUnit);
         if (gameObjectsUsed == null)
         {
             gameObjectsUsed = new List<Transform>();
@@ -155,6 +186,6 @@ public class BufferGraphic
         transform.localPosition = Vector3.zero;
 
         gameObjectsUsed.Remove(transform);
-        gameObjectsOnHold.Add(transform);
+        gameObjectsOnHold.Enqueue(transform);
     }
 }

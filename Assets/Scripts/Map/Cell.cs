@@ -27,16 +27,12 @@ namespace MapGame
         public bool _isVisible;
         public Cell came_from;
 
-        private int type = -1; // Element (int): 0 = empty; 1 = wall; 2 = ground
+        public int sortingLayer;
 
-        public SpriteRenderer render;
+        private int type = -1; // Element (int): 0 = empty; 1 = wall; 2 = ground
 
         public GameObject Object;
 
-        public void SetSpriteRender(SpriteRenderer render)
-        {
-            this.render = render;
-        }
 
         public void SetIsVisible(bool isVisible)
         {
@@ -51,6 +47,8 @@ namespace MapGame
             {
                 _components = new List<CellComponent>();
             }
+
+            this.sortingLayer = (int)((this._parent.height - y) + (this._parent.width - x)) + 1 * 5;
         }
 
         public void set_type(int type)

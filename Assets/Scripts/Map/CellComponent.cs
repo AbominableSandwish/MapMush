@@ -116,7 +116,6 @@ namespace MapGame
     {
         private bool isDynamic = false;
         private BufferGraphic buffer;
-        private int _sortingLayer;
 
         public int _texture;
 
@@ -134,14 +133,12 @@ namespace MapGame
             this.buffer = buffer;
             
             _texture = texture;
-
-            _sortingLayer = (int)((this._parent._parent.height - _parent.position.y) + (this._parent._parent.width - _parent.position.x))  + 1;
-
-                Vector2 resultPos =
+           
+            Vector2 resultPos =
                     convertTileCoordInScreenCoord((int)parent.position.x, (int) (parent.position.y)) +
                     new Vector2(0, _parent.position.z);
                 Vector3 ScreenPos = new Vector3(resultPos.x, resultPos.y);
-                obj = buffer.AddGameObject(ScreenPos, _texture);
+                obj = buffer.AddGameObject(ScreenPos, _texture, parent.sortingLayer);
 
 
         }
