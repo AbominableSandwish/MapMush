@@ -59,6 +59,8 @@ public class MapManager : MonoBehaviour
         map = new Map();
         map.Generate(height, width, offset_Z, noise, freq, this);
         SaveIntoJson();
+
+        nextTime = Time.time + 120;
     }
 
     private Vector2 convertTileCoordInScreenCoord(int tileCoordX, int tileCoordY)
@@ -81,7 +83,7 @@ public class MapManager : MonoBehaviour
         NIGHT
     }
 
-    private float nextTime = Time.time + 120;
+    private float nextTime;
 
     private GameTime gameTime = GameTime.DAY;
     
