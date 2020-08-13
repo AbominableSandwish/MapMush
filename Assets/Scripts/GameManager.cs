@@ -6,9 +6,11 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+
     private Map map;
     private MapManager mapManager;
-    private UIMapManager uiMapManager;
+    public BufferGraphic bufferGraphic;
+   // private UIMapManager uiMapManager;
     private IAManager iaManager;
     private CameraManager cameraManager;
 
@@ -17,7 +19,7 @@ public class GameManager : MonoBehaviour
 
 
 
-    public Search search;
+    //public Search search;
 
     private int teamIsPlaying = 0;
 
@@ -30,10 +32,10 @@ public class GameManager : MonoBehaviour
         return screenCoord;
     }
 
-    public void Select(Vector2 position)
-    {
-        mapManager.SelectCell(position, Color.cyan);
-    }
+    //public void Select(Vector2 position)
+    //{
+    //    mapManager.SelectCell(position, Color.cyan);
+    //}
 
 
 
@@ -53,8 +55,9 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //Todo buffer
         Generate();
-        teamIsPlaying = 1;
+        //teamIsPlaying = 1;
     }
 
 
@@ -63,14 +66,16 @@ public class GameManager : MonoBehaviour
     public void Generate()
     {
         mapManager = GameObject.Find("Map").GetComponent<MapManager>();
-        uiMapManager = GameObject.Find("Map").GetComponent<UIMapManager>();
+       // uiMapManager = GameObject.Find("Map").GetComponent<UIMapManager>();
         iaManager = GameObject.Find("IAManager").GetComponent<IAManager>();
         cameraManager = Camera.main.gameObject.GetComponent<CameraManager>();
-        // mapManager.Clean();
-        mapManager.GenerateMap();
-        if(iaManager.isActiveAndEnabled)
+
+        bufferGraphic = new BufferGraphic(mapManager);
+
+        mapManager.GenerateMap(cameraManager);
+        if (iaManager.isActiveAndEnabled)
             iaManager.InstancePlayer(mapManager);
-        cameraManager.RestartCamera();
+        cameraManager.RestartCamera(bufferGraphic);
     }
 
     public void ChangeCellSelect(Vector2Int movePosition)
@@ -88,8 +93,8 @@ public class GameManager : MonoBehaviour
 
     public void SetCellSelect()
     {
-        search = new Search();
-        cells = search.Research(this.cell_select.x, this.cell_select.y, 40);
+        //search = new Search();
+       // cells = search.Research(this.cell_select.x, this.cell_select.y, 40);
        // uiMapManager.SetTile(cells);
 
         //path = search.Path(new Vector2Int(this.cell_select.x, this.cell_select.y), new Vector2Int(19, 19));

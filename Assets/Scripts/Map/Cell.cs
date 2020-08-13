@@ -27,65 +27,16 @@ namespace MapGame
         public bool _isVisible;
         public Cell came_from;
 
-        private int type; // Element (int): 0 = empty; 1 = wall; 2 = ground
-        private int texture;
+        public int sortingLayer;
 
-        public SpriteRenderer render;
+        private int type = -1; // Element (int): 0 = empty; 1 = wall; 2 = ground
 
         public GameObject Object;
 
-        public void SetSpriteRender(SpriteRenderer render)
-        {
-            this.render = render;
-        }
 
         public void SetIsVisible(bool isVisible)
         {
-            if (isVisible == true)
-            {
-                if (isVisible = !this._isVisible)
-                {
-                    if (_components != null)
-                    {
-                        foreach (var component in _components)
-                        {
-                            if (component.GetType() == typeof(Graphic))
-                            {
-                                GameObject render = component.Draw();
-                            }
 
-                            //if (component.GetType() == typeof(Plant))
-                            //{
-                            //    GameObject plant = component.Draw();
-                            //    plant.transform.position =
-                            //        convertTileCoordInScreenCoord(position) + new Vector3(-0.1f, position.z + 0.7f);
-
-                            //}
-                        }
-                    }
-
-                    this._isVisible = true;
-                }
-            }
-            else
-            {
-                if (_components != null)
-                {
-                    foreach (var component in _components)
-                    {
-                        if (component.GetType() == typeof(Plant))
-                        {
-                            component.Clean();
-                        }
-
-                        if (component.GetType() == typeof(Graphic))
-                        {
-                            component.Clean();
-                        }
-                    }
-                }
-                this._isVisible = false;
-            }
         }
 
         public Cell(Map parent, int x, int y)
@@ -96,16 +47,8 @@ namespace MapGame
             {
                 _components = new List<CellComponent>();
             }
-        }
 
-        public void set_texture(int texture)
-        {
-            this.texture = texture;
-        }
-
-        int get_texture()
-        {
-            return this.texture;
+            this.sortingLayer = (int)((this._parent.height - y) + (this._parent.width - x)) + 1 * 5;
         }
 
         public void set_type(int type)

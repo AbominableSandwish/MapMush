@@ -19,7 +19,7 @@ public class IAController : MonoBehaviour
     private Map map;
     private Cell cell;
     private SpriteRenderer render;
-    private UIMapManager Ui;
+    //private UIMapManager Ui;
 
     public void Init(Map map)
     {
@@ -29,7 +29,7 @@ public class IAController : MonoBehaviour
 
 
         GetComponentInChildren<Animator>().speed += Random.Range(-0.4f, 0.4f);
-        Ui = GameObject.Find("Map").GetComponent<UIMapManager>();
+        //Ui = GameObject.Find("Map").GetComponent<UIMapManager>();
 
     }
 
@@ -41,8 +41,8 @@ public class IAController : MonoBehaviour
         search = new Search();
         cells = search.Research(position.x, position.y, 1);
 
-        if(render != null && cells[0].render != null)
-        render.sortingOrder = cells[0].render.sortingOrder + 2;
+        if (render != null && cells[0] != null)
+            render.sortingOrder = cells[0].sortingLayer + 2;
     }
 
     private Vector2Int position;
@@ -77,19 +77,19 @@ public class IAController : MonoBehaviour
     {
         if (path != null)
         {
-            celltarget = path[indexPath+1];
+            celltarget = path[indexPath + 1];
             GetComponentInChildren<Animator>().SetBool("IsMoving", true);
 
             startPosition = convertTileCoordInScreenCoord((int)path[indexPath].position.x, (int)path[indexPath].position.y);
-            nextPositon = convertTileCoordInScreenCoord((int)path[indexPath+1].position.x, (int)path[indexPath + 1].position.y);    
+            nextPositon = convertTileCoordInScreenCoord((int)path[indexPath + 1].position.x, (int)path[indexPath + 1].position.y);
 
-            if (path[indexPath].position.z != path[indexPath+1].position.z)
+            if (path[indexPath].position.z != path[indexPath + 1].position.z)
             {
-                height = path[indexPath+1].position.z - path[indexPath].position.z;
+                height = path[indexPath + 1].position.z - path[indexPath].position.z;
 
             }
 
-            nextHeight = path[indexPath+1].position.z;
+            nextHeight = path[indexPath + 1].position.z;
             distance = (new Vector3(startPosition.x, startPosition.y) - new Vector3(nextPositon.x, nextPositon.y)).magnitude;
             direction = (new Vector3(nextPositon.x, nextPositon.y) - new Vector3(startPosition.x, startPosition.y)).normalized;
 
@@ -111,7 +111,8 @@ public class IAController : MonoBehaviour
         switch (state)
         {
             case State.IDLE:
-                if (!isWaiting) {
+                if (!isWaiting)
+                {
                     if (!isBlocking)
                     {
                         this.direction = Vector2.zero;
@@ -134,8 +135,8 @@ public class IAController : MonoBehaviour
                                 if (cells != null)
                                 {
                                     int indexPath = Random.Range(0, cells.Count - 1);
-                                    targetPositon = new Vector2Int((int) cells[indexPath].position.x,
-                                        (int) cells[indexPath].position.y);
+                                    targetPositon = new Vector2Int((int)cells[indexPath].position.x,
+                                        (int)cells[indexPath].position.y);
 
                                     path = new List<Cell>();
                                     path = search.Path(new Vector2Int(position.x, position.y), targetPositon);
@@ -145,17 +146,17 @@ public class IAController : MonoBehaviour
 
                                         CalcNewPosition(this.indexPath);
 
-                                        if (direction.x < 0)
-                                        {
-                                            render.sortingOrder = celltarget.render.sortingOrder + 2;
-                                        }
+                                        //if (direction.x < 0)
+                                        //{
+                                        //    render.sortingOrder = celltarget.render.sortingOrder + 2;
+                                        //}
 
-                                        if (direction.y < 0)
-                                        {
-                                            render.sortingOrder = celltarget.render.sortingOrder + 2;
-                                        }
+                                        //if (direction.y < 0)
+                                        //{
+                                        //    render.sortingOrder = celltarget.render.sortingOrder + 2;
+                                        //}
 
-                                        pathUI = Ui.AddPath(path);
+                                     //   pathUI = Ui.AddPath(path);
 
                                         state = State.MOVE;
 
@@ -168,7 +169,7 @@ public class IAController : MonoBehaviour
                 break;
 
             case State.MOVE:
-                if (this.indexPath != path.Count-1)
+                if (this.indexPath != path.Count - 1)
                 {
                     float dist = (startPosition - nextPositon).magnitude;
 
@@ -183,18 +184,18 @@ public class IAController : MonoBehaviour
 
                         if (dist <= 0.1f)
                         {
-                            render.sortingOrder = celltarget.render.sortingOrder + 2;
+                            render.sortingOrder = celltarget.sortingLayer + 2;
                             //POSITION
                             transform.position = new Vector3(nextPositon.x, nextPositon.y + nextHeight);
 
                             map.matrix[position.x, position.y].SetObject(null);
 
-                                //TODO
-                                path[indexPath].SetObject(this.gameObject);
+                            //TODO
+                            path[indexPath].SetObject(this.gameObject);
 
 
-                                position = new Vector2Int((int)path[indexPath].position.x, (int)path[indexPath].position.y);
-                                indexPath++;
+                            position = new Vector2Int((int)path[indexPath].position.x, (int)path[indexPath].position.y);
+                            indexPath++;
 
                             if (this.indexPath != path.Count - 1)
                             {
@@ -203,13 +204,13 @@ public class IAController : MonoBehaviour
 
                             if (direction.x < 0)
                             {
-                                if(direction.y < 0)
-                                    render.sortingOrder = celltarget.render.sortingOrder + 2;
+                                if (direction.y < 0)
+                                    render.sortingOrder = celltarget.sortingLayer + 2;
                             }
 
                             if (direction.y < 0)
                             {
-                                render.sortingOrder = celltarget.render.sortingOrder + 2;
+                                render.sortingOrder = celltarget.sortingLayer + 2;
                             }
 
                             GetComponentInChildren<Animator>().SetBool("IsMoving", true);
@@ -233,10 +234,10 @@ public class IAController : MonoBehaviour
 
                         time = Time.time + timeToWait;
 
-                        render.sortingOrder = celltarget.render.sortingOrder + 2;
+                        render.sortingOrder = celltarget.sortingLayer + 2;
 
                         celltarget = null;
-                        Ui.RemovePath(pathUI);
+                      //  Ui.RemovePath(pathUI);
                         this.indexPath = 0;
 
                         state = State.IDLE;
@@ -251,7 +252,7 @@ public class IAController : MonoBehaviour
             case State.ClIMB:
                 transform.position += new Vector3(0, height);
 
-                render.sortingOrder = celltarget.render.sortingOrder +2;
+                //render.sortingOrder = celltarget.render.sortingOrder + 2;
 
                 height = 0.0f;
                 state = State.MOVE;

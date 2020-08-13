@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Search
 {
-    private UIMapManager uiMapManager;
+    // private UIMapManager uiMapManager;
 
     public class ParamSearch
     {
@@ -33,7 +33,7 @@ public class Search
 
     public List<Cell> Research(int x, int y, int field)
     {
-        uiMapManager = GameObject.Find("Map").GetComponent<UIMapManager>();
+        // uiMapManager = GameObject.Find("Map").GetComponent<UIMapManager>();
         map = GameObject.Find("Map").GetComponent<MapManager>().GetMap();
 
         //if (map.matrix[x, y].get_type() == 1)
@@ -45,8 +45,8 @@ public class Search
         {
             for (int j = 0; j < map.GetHeight(); j++)
             {
-                map.matrix[i,j].came_from = null;
-                map.matrix[i,j].visited = false;
+                map.matrix[i, j].came_from = null;
+                map.matrix[i, j].visited = false;
             }
         }
 
@@ -65,25 +65,26 @@ public class Search
             BFS_search(next_tile.x, next_tile.y, next_tile.parent, next_tile.field);
 
             queue.Remove(queue[0]);
-        }     
+        }
         return this.fieldOfView;
     }
 
     public void BFS_search(int x, int y, Cell parent, int field)
     {
-        if ((x >= 0 && x <= map.GetWidth() - 1) && (y >= 0 && y <= map.GetHeight() - 1)){
-            if (map.matrix[x,y].get_type() >= 1)
+        if ((x >= 0 && x <= map.GetWidth() - 1) && (y >= 0 && y <= map.GetHeight() - 1))
+        {
+            if (map.matrix[x, y].get_type() >= 1)
             {
                 if (map.matrix[x, y].visited == false)
                 {
-                    map.matrix[x,y].visited = true;
-                    map.matrix[x,y].came_from = parent;
-                    this.fieldOfView.Add(map.matrix[x,y]);
+                    map.matrix[x, y].visited = true;
+                    map.matrix[x, y].came_from = parent;
+                    this.fieldOfView.Add(map.matrix[x, y]);
                     if (field != 0)
                     {
-                        queue.Add(new ParamSearch(x + 1, y, map.matrix[x,y], field - 1));
+                        queue.Add(new ParamSearch(x + 1, y, map.matrix[x, y], field - 1));
                         queue.Add(new ParamSearch(x - 1, y, map.matrix[x, y], field - 1));
-                            
+
                         queue.Add(new ParamSearch(x, y + 1, map.matrix[x, y], field - 1));
                         queue.Add(new ParamSearch(x, y - 1, map.matrix[x, y], field - 1));
                     }
@@ -110,11 +111,11 @@ public class Search
                 path.Add(cell);
             }
         }
-        
+
         int i = 0;
         while (path[path.Count - 1] != cellStart)
         {
-            
+
 
             path.Add(path[path.Count - 1].came_from);
 

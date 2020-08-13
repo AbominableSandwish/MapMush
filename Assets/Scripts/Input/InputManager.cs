@@ -156,11 +156,10 @@ public class InputManager : MonoBehaviour
 
         //GameObject.Find("Map").GetComponent<MapManager>().SelectCell(convertScreenCoordInCoord(Camera.main.ScreenToWorldPoint(Input.mousePosition)), Color.green);
 
-        if (Input.GetMouseButtonDown(0))
-        {
-            gameManager.Select(convertScreenCoordInCoord(Camera.main.ScreenToWorldPoint(Input.mousePosition)))
-                ;
-        }
+        //if (Input.GetMouseButtonDown(0))
+        //{
+        //    gameManager.Select(convertScreenCoordInCoord(Camera.main.ScreenToWorldPoint(Input.mousePosition))) ;
+        //}
 
     }
 

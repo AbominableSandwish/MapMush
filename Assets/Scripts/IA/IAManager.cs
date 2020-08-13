@@ -120,8 +120,8 @@ public class IAManager : MonoBehaviour
             this.listIAInAction = new IAController[maxInAction];
         }
 
-        if(this.listAllIA.Count != 0)
-            this.listAllIA.Insert(Random.Range(0, listAllIA.Count-1), ia);
+        if (this.listAllIA.Count != 0)
+            this.listAllIA.Insert(Random.Range(0, listAllIA.Count - 1), ia);
         else
             this.listAllIA.Add(ia);
     }
@@ -171,7 +171,7 @@ public class IAManager : MonoBehaviour
                     Vector3 position = convertTileCoordInScreenCoord(i, j);
                     position += new Vector3(0, mapManager.GetMap().matrix[i, j].position.z);
                     player.transform.position = position;
-                    
+
                     //player.transform.position = new Vector3(-5 + 0.5f * i, -5 + 0.5f * j);
 
                     mapManager.GetMap().AddObject(i, j, player);
