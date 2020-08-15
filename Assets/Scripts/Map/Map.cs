@@ -28,7 +28,6 @@ namespace MapGame
 
 
         private float moy = 0.0f;
-        private float lastLevel = 0.0f;
 
         private float direction = 1;
         private const float HEIGHT_MAX = 5.0f;
@@ -44,11 +43,6 @@ namespace MapGame
             foreach (CellComponent c in _AddedC)
             {
                 _C.Add(c);
-
-                if (c.GetType() == typeof(Plant))
-                {
-                    counterPlant++;
-                }
             }
 
             _AddedC.Clear();
@@ -242,7 +236,7 @@ namespace MapGame
                 {
                     if (matrix[i, j].get_type() == 1)
                     {
-                        matrix[i, j].AddComponent(new Plant(matrix[i, j], new Vector2(i, j), new Vector2(1, 0), Color.blue, new Rect(108, 299, 22, 23), manager.tile_flower_blue.texture));
+                       // matrix[i, j].AddComponent(new Plant(matrix[i, j], new Vector2(i, j), new Vector2(1, 0), Color.blue, new Rect(108, 299, 22, 23), manager.tile_flower_blue.texture));
                     }
                     float rdm = Random.Range(0.0f, 1.0f);
                     if (rdm < 0.994f && rdm > 0.95)

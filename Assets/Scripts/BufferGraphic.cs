@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 
 public class BufferGraphic
@@ -143,7 +142,7 @@ public class BufferGraphic
         SpriteRenderer render = transform.gameObject.GetComponent<SpriteRenderer>();
         if (type == 0)
         {
-            render.sprite = bufferTransforms[0].gameObject.GetComponent<SpriteRenderer>().sprite;
+            render.sprite = null;
         }
         if (type == 1)
         {

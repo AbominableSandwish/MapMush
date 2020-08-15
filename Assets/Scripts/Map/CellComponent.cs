@@ -128,7 +128,7 @@ namespace MapGame
         }
 
         public Graphic(BufferGraphic buffer, Cell parent, int texture) : base(parent)
-        {
+        {   
         
             this.buffer = buffer;
             
@@ -227,34 +227,34 @@ namespace MapGame
 
     }
 
-    public class Plant : CellComponent
-    {
-        public Color _color;
-        public Cell _parent;
-        public Graphic _render;
+    //public class Plant : CellComponent
+    //{
+    //    public Color _color;
+    //    public Cell _parent;
+    //    public Graphic _render;
 
-        public Plant(Cell parent, Vector2 position, Vector2 dimension, Color color, Rect rect, Texture2D texture) : base(parent)
-        {
-            _parent = parent;
-            _color = color;
+    //    public Plant(Cell parent, Vector2 position, Vector2 dimension, Color color, Rect rect, Texture2D texture) : base(parent)
+    //    {
+    //        _parent = parent;
+    //        _color = color;
             
-           // _render = new Graphic(_parent, new ObjectTransform(position, dimension), rect, texture);
-        }
+    //       // _render = new Graphic(_parent, new ObjectTransform(position, dimension), rect, texture);
+    //    }
 
-        public void SetColor(Color color)
-        {
-            _color = color;
-        }
+    //    public void SetColor(Color color)
+    //    {
+    //        _color = color;
+    //    }
 
-        public override GameObject Draw()
-        {
-            GameObject plant = _render.Draw();
-            return plant;
-        }
+    //    public override GameObject Draw()
+    //    {
+    //        GameObject plant = _render.Draw();
+    //        return plant;
+    //    }
 
-        public override void Clean()
-        {
-            _render.Clean();
-        }
-    }
+    //    public override void Clean()
+    //    {
+    //        _render.Clean();
+    //    }
+    //}
 }

@@ -7,6 +7,7 @@ using Vector3 = UnityEngine.Vector3;
 
 public class CameraManager : MonoBehaviour
 {
+    private Camera camera;
     public enum Mode
     {
         FREE,
@@ -27,9 +28,9 @@ public class CameraManager : MonoBehaviour
 
     private HashPartition hash;
 
-    public bool IsOn = false;
+    public bool IsOn = true;
     private Map map;
-    [SerializeField] private int max_bucket;
+    [SerializeField] private int max_bucket = 1536;
     private Bucket[,] buckets;
 
     public List<Bucket> bucketsToLoad;
@@ -37,12 +38,14 @@ public class CameraManager : MonoBehaviour
 
     public List<Bucket> bucketsVîsible;
 
-    private Vector2 direction;
+    private Vector2 direction = Vector2.zero;
 
-    [SerializeField] private float LengthVisibility;
+    [SerializeField] private float LengthVisibility = 30.0f;
 
     public void ResetView()
     {
+        camera = GetComponent<Camera>();
+
         bucketsVîsible = new List<Bucket>();
         buckets = this.hash.GetBuckets();
 

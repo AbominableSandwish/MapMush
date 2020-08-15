@@ -41,3 +41,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Water
+    uniqueID: 1072337925
+    locked: 0
+  - name: Lava
+    uniqueID: 1804279465
+    locked: 0
