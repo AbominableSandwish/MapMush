@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 0
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -5021,7 +5021,7 @@ Transform:
   m_Children:
   - {fileID: 1343249083}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &469805966
 GameObject:
@@ -5986,7 +5986,6 @@ Transform:
   - {fileID: 469805967}
   - {fileID: 940764734}
   - {fileID: 928696577}
-  - {fileID: 1774500201}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6326,7 +6325,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1774500201}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: Water
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6340,13 +6339,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1774500200}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 272, z: 0}
   m_LocalScale: {x: 0.8, y: 0.4, z: 1}
   m_Children:
   - {fileID: 1953873765}
-  m_Father: {fileID: 1331634368}
-  m_RootOrder: 6
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1810876909
 GameObject:
@@ -6585,7 +6584,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1953873765}
   - component: {fileID: 1953873766}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: RenderWater
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6842,5 +6841,5 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

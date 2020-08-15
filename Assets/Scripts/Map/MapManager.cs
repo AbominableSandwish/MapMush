@@ -137,12 +137,12 @@ public class MapManager : MonoBehaviour
                      
                         if (material.color.r >= 0.6f)
                         {
-                            water.SetColor("_WaterColor", water.GetColor("_WaterColor") - new Color(0.0f, 0.5f, 0.5f) * time / 25.0f);
-                            water.SetColor("_WaterColor", water.GetColor("_WaterColor") + new Color(0.5f, 0.0f, 0.0f) * time / 25.0f);
+                            water.SetColor("_WaterColor", water.GetColor("_WaterColor") - new Color(0.0f, 1.0f, 1.0f) * time / 25.0f);
+                            water.SetColor("_WaterColor", water.GetColor("_WaterColor") + new Color(1.0f, 0.0f, 0.0f) * time / 25.0f);
                         }
                         else
                         {
-                            water.SetColor("_WaterColor", water.GetColor("_WaterColor") - new Color(0.5f, 0.5f, 0.5f, 0) * time / 25.0f);
+                            water.SetColor("_WaterColor", water.GetColor("_WaterColor") - new Color(2.0f, 1.0f, 1.0f, 0) * time / 25.0f);
                         }
 
                         water.SetColor("_LightFoamColor", water.GetColor("_LightFoamColor") - Color.white * time / 25.0f);
