@@ -51,15 +51,12 @@ namespace MapGame
             {
                 _C.Remove(c);
             }
-
             _RemoveC.Clear();
 
-            foreach (CellComponent c in _C)
-            {
-                c.Update(gameTime);
-
-            }
-            Debug.Log("Plants number: " + counterPlant);
+            //foreach (CellComponent c in _C)
+            //{
+            //    c.Update(gameTime);
+            //}
         }
 
         public float PerlinNoiseMap(int x, int y)
@@ -74,7 +71,7 @@ namespace MapGame
             this.height = height;
             this.width = width;
 
-
+            //Instance Map
             Cell[,] matrix = new Cell[width, height];
             for (int i = 0; i < width; i++)
             {
@@ -85,9 +82,9 @@ namespace MapGame
                   
                 }
             }
-
             this.matrix = matrix;
 
+            //Generate Map
             for (int i = 0; i < noise; i++)
             {
                 int xOrg = Random.Range(1, 5000);
@@ -100,35 +97,13 @@ namespace MapGame
                         var perlin =  1* Mathf.PerlinNoise((float)nx*3, (float)ny*3) 
                             + 0.5f * Mathf.PerlinNoise((float)nx * 6, (float)ny * 6)
                             + 0.25f * Mathf.PerlinNoise((float)nx * 12, (float)ny * 12);
-                        this.matrix[x,y].position += new Vector3(0, 0, perlin/noise);
+                        this.matrix[x,y].height += perlin/noise;
                       
                     }
                 }
 
-                //Search bfs = new Search();
-
-                //int x = Random.Range(0, this.width);
-                //int y = Random.Range(0, this.height);
-                //int z;
-                //if (matrix[x, y].position.z < 0)
-                //{
-                //    z = 8;
-                //}
-                //else
-                //{
-                //    z = Random.Range(3, 6 - (int) matrix[x, y].position.z);
-                //}
-
-                //List<Cell> cells = bfs.Research(x, y, z);
-                //counter += Time.deltaTime;
-
-                //foreach (var cell in cells)
-                //{
-                //    cell.position += new Vector3(0, 0, PerlinNoiseMap(0, 0));
-                //}
             }
-
-            // Set up the texture and a Color array to hold pixels during processing.
+            
             noiseTex = new Texture2D(width, height);
             pix = new Color[noiseTex.width * noiseTex.height];
 
@@ -140,7 +115,7 @@ namespace MapGame
 
                     float z= 0.0f;
 
-                    if (cell.position.z < 0.7f)
+                    if (cell.height < 0.7f)
                     {
                         z = 0;
                         cell.set_type(0);
@@ -148,7 +123,7 @@ namespace MapGame
                     }
 
 
-                    if (cell.position.z >= 0.7f && cell.position.z < 0.85f)
+                    if (cell.height >= 0.7f && cell.height < 0.85f)
                     {
                         cell.set_type(1);
                         z = 0.725f;
@@ -157,39 +132,39 @@ namespace MapGame
                     }
 
               
-                    if (cell.position.z >= 0.85f && cell.position.z < 0.97f)
+                    if (cell.height >= 0.85f && cell.height < 0.97f)
                     {
-                        if(cell.position.z >= 0.85f && cell.position.z < 0.90f)
+                        if(cell.height >= 0.85f && cell.height < 0.90f)
                             z = 0.725f*2;
-                        if (cell.position.z >= 0.90f && cell.position.z < 0.97f)
+                        if (cell.height >= 0.90f && cell.height < 0.97f)
                             z = 0.725f*3;
                         cell.set_type(2);
                         pix[(int)j * noiseTex.width + (int)i] = new Color(0.0f, 0.7f, 0.0f);
                         //rect = new Rect(8, 1398, 80, 70);
                     }
 
-                    if (cell.position.z >= 0.97f && cell.position.z < 1.03f)
+                    if (cell.height >= 0.97f && cell.height < 1.03f)
                     {
-                        if (cell.position.z >= 0.97f && cell.position.z < 0.99f)
+                        if (cell.height >= 0.97f && cell.height < 0.99f)
                             z = 0.725f * 4;
-                        if (cell.position.z >= 0.99f && cell.position.z < 1.01f)
+                        if (cell.height >= 0.99f && cell.height < 1.01f)
                             z = 0.725f * 5;
-                        if (cell.position.z >= 1.01f && cell.position.z < 1.03f)
+                        if (cell.height >= 1.01f && cell.height < 1.03f)
                             z = 0.725f * 6;
                         cell.set_type(2);
                         pix[(int)j * noiseTex.width + (int)i] = new Color(0.0f, 0.5f, 0.0f);
                         //rect = new Rect(8, 1398, 80, 70);
                     }
 
-                    if (cell.position.z >= 1.03f && cell.position.z < 1.1f)
+                    if (cell.height >= 1.03f && cell.height < 1.1f)
                     {
-                        if (cell.position.z >= 1.03f && cell.position.z < 1.05f)
+                        if (cell.height >= 1.03f && cell.height < 1.05f)
                             z = 0.725f * 7;
-                        if (cell.position.z >= 1.05f && cell.position.z < 1.07f)
+                        if (cell.height >= 1.05f && cell.height < 1.07f)
                             z = 0.725f * 8;
-                        if (cell.position.z >= 1.07f && cell.position.z < 1.09f)
+                        if (cell.height >= 1.07f && cell.height < 1.09f)
                             z = 0.725f * 9;
-                        if (cell.position.z >= 1.09f && cell.position.z < 1.1f)
+                        if (cell.height >= 1.09f && cell.height < 1.1f)
                             z = 0.725f * 10;
 
                         cell.set_type(3);
@@ -197,19 +172,19 @@ namespace MapGame
                         //rect = new Rect(8, 1398, 80, 70);
                     }
 
-                    if (cell.position.z >= 1.1f)
+                    if (cell.height >= 1.1f)
                     {
                         pix[(int)j * noiseTex.width + (int)i] = new Color(1, 1, 1);
-                        if (cell.position.z >= 1.1f && cell.position.z < 1.12f)
+                        if (cell.height >= 1.1f && cell.height < 1.12f)
+                            z = 0.725f * 11;
+                        if (cell.height >= 1.12f && cell.height < 1.14f)
                             z = 0.725f * 12;
-                        if (cell.position.z >= 1.12f && cell.position.z < 1.14f)
+                        if (cell.height >= 1.14f && cell.height < 1.16f)
                             z = 0.725f * 13;
-                        if (cell.position.z >= 1.14f && cell.position.z < 1.16f)
+                        if (cell.height >= 1.16f && cell.height < 1.18f)
                             z = 0.725f * 14;
-                        if (cell.position.z >= 1.16f && cell.position.z < 1.18f)
+                        if (cell.height >= 1.18f)
                             z = 0.725f * 15;
-                        if (cell.position.z >= 1.18f)
-                            z = 0.725f * 16;
                         cell.set_type(3);
                         //rect = new Rect(8, 1178, 80, 70);
                     }
@@ -219,13 +194,95 @@ namespace MapGame
 
             }
 
+            //Generate Rivers
+            //A* algo
+            //z < 0
+
+            //Generate Tree
+            int counter = 0;
+            float[,] bluenoise = new float[height, width];
+
+            //By choosing a different R for each biome we can get a variable density of trees:
+       
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    double nx = x / (double)width - 0.5d, ny = y / (double)height - 0.5d;
+                    // blue noise is high frequency; try varying this
+                    bluenoise[y,x] = Mathf.PerlinNoise((float) nx * 500, (float) ny * 500);
+                }
+            }
+
+            int R = 1;
+            for (int yc = 0; yc < height; yc++)
+            {
+                for (int xc = 0; xc < width; xc++)
+                {
+                    Cell cell = this.matrix[xc, yc];
+                    if (cell.get_type() == 1 || cell.get_type() == 2)
+                    {
+                      
+                        if (cell.get_type() == 1)
+                        {
+                            R = 8;
+                            if (cell.height >= 0.7f && cell.height < 0.76f)
+                                R = 8;
+                            if (cell.height >= 0.76f && cell.height < 0.80f)
+                                R = 2;
+                            if (cell.height >= 0.8f && cell.height < 0.85f)
+                                R = 1;
+                        }
+
+                        if (cell.get_type() == 2)
+                        {
+                            if (cell.height >= 0.85f && cell.height < 0.97f)
+                                R = 1;
+                            if (cell.height >= 0.97f && cell.height < 0.99f)
+                                R = 1;
+                            if (cell.height >= 0.99f && cell.height < 1.01f)
+                                R = 2;
+                            if (cell.height >= 1.01f && cell.height < 1.03f)
+                                R = 4;
+                        }
+
+
+                        double max = 0;
+                        // there are more efficient algorithms than this
+                        for (int yn = yc - R; yn <= yc + R; yn++)
+                        {
+                            for (int xn = xc - R; xn <= xc + R; xn++)
+                            {
+                                if (0 <= yn && yn < height && 0 <= xn && xn < width)
+                                {
+                                    double e = bluenoise[yn, xn];
+                                    if (e > max)
+                                    {
+                                        max = e;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (bluenoise[yc, xc] == max)
+                        {
+                            counter++;
+                            MTree tree = new MTree(this.matrix[xc, yc], 0);
+                            this.matrix[xc, yc].AddComponent(tree);
+                            // place tree at xc,yc
+                        }
+                    }
+                }
+            }
+            Debug.Log("Number Tree: " + counter);
+
+            //Generate Plants
 
             GameObject.Find("MiniMap").GetComponent<Image>().material.mainTexture = noiseTex;
             // Copy the pixel data to the texture and load it into the GPU.
             noiseTex.SetPixels(pix);
             noiseTex.Apply();
-
-            //GeneratePlants(manager);
         }
 
         public void GeneratePlants(MapManager manager)

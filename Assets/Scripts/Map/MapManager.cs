@@ -39,9 +39,10 @@ public class MapManager : MonoBehaviour
     [SerializeField] public Sprite tile_Rock;
     [SerializeField] public Sprite tile_HightRock;
 
-    [Header("Objects")] [SerializeField] private GameObject tree;
+    [Header("Tree")]
+    [SerializeField] public Sprite tile_Tree;
 
-    [Header("Decoration")] [SerializeField]
+    [Header("Plants")] [SerializeField]
     private GameObject prefab_deco;
     [SerializeField] public Sprite tile_flower_red;
     [SerializeField] public Sprite tile_flower_blue;
@@ -88,7 +89,7 @@ public class MapManager : MonoBehaviour
     private GameTime gameTime = GameTime.DAY;
     
 
-    public void Update()
+    public void FixedUpdate()
     {
         if (map != null)
         {
@@ -96,67 +97,78 @@ public class MapManager : MonoBehaviour
             map.Update(time);
             Material water;
 
-            switch (gameTime)
-            {
-                case GameTime.DAY:
-                    if (Time.time >= nextTime)
-                    {
-                        nextTime += 20;
-                        gameTime = GameTime.NIGHT;
-                    }
+            //switch (gameTime)
+            //{
+            //    case GameTime.DAY:
+            //        if (Time.time >= nextTime)
+            //        {
+            //            nextTime += 20;
+            //            gameTime = GameTime.NIGHT;
+            //        }
 
-                    if (material.color.r < 1.0f)
-                    {
-                        material.color += new Color(1.0f, 1.0f, 1.0f, 0.0f) * time / 20.0f;
-                        water = GameObject.Find("RenderWater").GetComponent<SpriteRenderer>().material;
-                        water.SetColor("_WaterColor", water.GetColor("_WaterColor") + Color.white * time / 25.0f);
-                        water.SetColor("_LightFoamColor", water.GetColor("_LightFoamColor") + Color.white * time / 25.0f);
-                        water.SetColor("_DarkFoamColor", water.GetColor("_DarkFoamColor") + Color.white * time / 25.0f);
+            //        if (material.color.r < 1.0f)
+            //        {
+            //            water = GameObject.Find("RenderWater").GetComponent<SpriteRenderer>().material;
+            //            if (material.color.r <= 0.6f)
+            //            {
+                          
 
-                    }
+            //                water.SetColor("_WaterColor", water.GetColor("_WaterColor") + new Color(1.0f, 1.0f, 1.0f, 0) * time / 25.0f);
+            //            }
+            //            else
+            //            {
+            //                water.SetColor("_WaterColor", water.GetColor("_WaterColor") + new Color(0.0f, 1.0f, 1.0f) * time / 25.0f);
+            //                water.SetColor("_WaterColor", water.GetColor("_WaterColor") - new Color(0.8f, 0.0f, 0.0f) * time / 25.0f);
+            //            }
+
+            //            material.color += new Color(1.0f, 1.0f, 1.0f, 0.0f) * time / 20.0f;
+            //            water.SetColor("_LightFoamColor", water.GetColor("_LightFoamColor") + Color.white * time / 20.0f);
+            //            water.SetColor("_DarkFoamColor", water.GetColor("_DarkFoamColor") + Color.white * time / 20.0f);
+
+            //        }
                    
-                    if (Camera.main.backgroundColor.b < 1.0f)
-                    {
-                        Camera.main.backgroundColor += new Color(0.5f, 0.5f, 1.0f, 0.0f) * time / 20.0f;
-                    }
+            //        if (Camera.main.backgroundColor.b < 1.0f)
+            //        {
+            //            Camera.main.backgroundColor += new Color(0.5f, 0.5f, 1.0f, 0.0f) * time / 20.0f;
+            //        }
                   
-                    break;
-                case GameTime.NIGHT:
-                    if (Time.time >= nextTime)
-                    {
-                        nextTime += 20;
-                        gameTime = GameTime.DAY;
-                    }
+            //        break;
+            //    case GameTime.NIGHT:
+            //        if (Time.time >= nextTime)
+            //        {
+            //            nextTime += 20;
+            //            gameTime = GameTime.DAY;
+            //        }
 
 
-                    if (material.color.r > 0.2f)
-                    {
-                        material.color -= new Color(1.0f, 1.0f, 1.0f, 0.0f) * time / 20.0f;
-                        water = GameObject.Find("RenderWater").GetComponent<SpriteRenderer>().material;
-                        //if(water.GetColor("_WaterColor").r > 0.2f)
+            //        if (material.color.r > 0.2f)
+            //        {
+            //            material.color -= new Color(1.0f, 1.0f, 1.0f, 0.0f) * time / 20.0f;
+            //            water = GameObject.Find("RenderWater").GetComponent<SpriteRenderer>().material;
+            //            //if(water.GetColor("_WaterColor").r > 0.2f)
                      
-                        if (material.color.r >= 0.6f)
-                        {
-                            water.SetColor("_WaterColor", water.GetColor("_WaterColor") - new Color(0.0f, 1.0f, 1.0f) * time / 25.0f);
-                            water.SetColor("_WaterColor", water.GetColor("_WaterColor") + new Color(1.0f, 0.0f, 0.0f) * time / 25.0f);
-                        }
-                        else
-                        {
-                            water.SetColor("_WaterColor", water.GetColor("_WaterColor") - new Color(2.0f, 1.0f, 1.0f, 0) * time / 25.0f);
-                        }
+            //            if (material.color.r >= 0.6f)
+            //            {
+            //                water.SetColor("_WaterColor", water.GetColor("_WaterColor") - new Color(0.0f, 1.0f, 1.0f) * time / 25.0f);
+            //                water.SetColor("_WaterColor", water.GetColor("_WaterColor") + new Color(0.8f, 0.0f, 0.0f) * time / 25.0f);
+            //            }
+            //            else
+            //            {
+            //                water.SetColor("_WaterColor", water.GetColor("_WaterColor") - new Color(1.0f, 1.0f, 1.0f, 0) * time / 25.0f);
+            //            }
 
-                        water.SetColor("_LightFoamColor", water.GetColor("_LightFoamColor") - Color.white * time / 25.0f);
-                        water.SetColor("_DarkFoamColor", water.GetColor("_DarkFoamColor") - Color.white * time / 25.0f);
-                    }
+            //            water.SetColor("_LightFoamColor", water.GetColor("_LightFoamColor") - Color.white * time / 20.0f);
+            //            water.SetColor("_DarkFoamColor", water.GetColor("_DarkFoamColor") - Color.white * time / 20.0f);
+            //        }
 
-                    if (Camera.main.backgroundColor.b > 0.22f)
-                    {
-                        Camera.main.backgroundColor -= new Color(0.5f, 0.5f, 1.0f, 0.0f) * time / 20.0f;
-                    }
+            //        if (Camera.main.backgroundColor.b > 0.22f)
+            //        {
+            //            Camera.main.backgroundColor -= new Color(0.5f, 0.5f, 1.0f, 0.0f) * time / 20.0f;
+            //        }
 
                
-                    break;
-            }
+            //        break;
+            //}
            
         }
 

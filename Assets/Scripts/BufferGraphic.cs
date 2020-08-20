@@ -9,7 +9,7 @@ public class BufferGraphic
     private List<Transform> tansforms;
     private MapManager mapManager;
 
-    public int nbrMaxTransform = 20000;
+    public int nbrMaxTransform = 200000;
 
     private Material material;
 
@@ -36,7 +36,15 @@ public class BufferGraphic
 
     }
 
-    public List<Transform> bufferTransforms;
+     public enum TypeTexture
+    {
+        Ground,
+        Tree,
+        Plant
+    }
+
+    public List<Transform> bufferGrounds;
+    public List<Transform> bufferTrees;
 
     public Queue<Transform> gameObjectsOnHold;
 
@@ -55,7 +63,8 @@ public class BufferGraphic
         transformParentMap = GameObject.Find("Map").transform;
 
         //Buffer
-        bufferTransforms = new List<Transform>();
+        bufferGrounds = new List<Transform>();
+        bufferTrees = new List<Transform>();
 
         material = mapManager.material;
       
@@ -68,7 +77,7 @@ public class BufferGraphic
         objW.GetComponent<SpriteRenderer>().drawMode = SpriteDrawMode.Sliced;
         objW.GetComponent<SpriteRenderer>().size = new Vector2(2, 1.75f);
         objW.GetComponent<SpriteRenderer>().material = material;
-        bufferTransforms.Add(objW.transform);
+        bufferGrounds.Add(objW.transform);
 
         {
             GameObject obj;
@@ -80,7 +89,7 @@ public class BufferGraphic
             obj.GetComponent<SpriteRenderer>().drawMode = SpriteDrawMode.Sliced;
             obj.GetComponent<SpriteRenderer>().size = new Vector2(2, 1.75f);
             obj.GetComponent<SpriteRenderer>().material = material;
-            bufferTransforms.Add(obj.transform);
+            bufferGrounds.Add(obj.transform);
         }
         {
             GameObject obj;
@@ -92,7 +101,7 @@ public class BufferGraphic
             obj.GetComponent<SpriteRenderer>().drawMode = SpriteDrawMode.Sliced;
             obj.GetComponent<SpriteRenderer>().size = new Vector2(2, 1.75f);
             obj.GetComponent<SpriteRenderer>().material = material;
-            bufferTransforms.Add(obj.transform);
+            bufferGrounds.Add(obj.transform);
         }
         {
             GameObject obj;
@@ -104,7 +113,18 @@ public class BufferGraphic
             obj.GetComponent<SpriteRenderer>().drawMode = SpriteDrawMode.Sliced;
             obj.GetComponent<SpriteRenderer>().size = new Vector2(2, 1.75f);
             obj.GetComponent<SpriteRenderer>().material = material;
-            bufferTransforms.Add(obj.transform);
+            bufferGrounds.Add(obj.transform);
+        }
+
+        {
+            GameObject obj;
+            string name = "prefab_Tree";
+            obj = GameObject.Instantiate(new GameObject(name).transform, transformParentBuffer).gameObject;
+            obj.transform.localPosition = new Vector3(2, 0);
+            obj.AddComponent<SpriteRenderer>();
+            obj.GetComponent<SpriteRenderer>().sprite = this.mapManager.tile_Tree;
+            obj.GetComponent<SpriteRenderer>().material = material;
+            bufferTrees.Add(obj.transform);
         }
 
         this.mapManager = mapManager;
@@ -133,43 +153,60 @@ public class BufferGraphic
 
     private const int IsometricRangePerYUnit = 10;
 
-    public Transform AddGameObject(Vector3 position, int type, int sortingLayer)
+    public Transform AddGameObject(Vector3 position, TypeTexture type, int texture, int sortingLayer)
     {
         Transform transform = gameObjectsOnHold.Dequeue();
 
         transform.parent = transformParentMap;
         transform.localPosition = position;
         SpriteRenderer render = transform.gameObject.GetComponent<SpriteRenderer>();
-        if (type == 0)
-        {
-            render.sprite = null;
-        }
-        if (type == 1)
-        {
-            render.sprite = bufferTransforms[1].gameObject.GetComponent<SpriteRenderer>().sprite;
-        }
-        if (type == 2)
-        {
-            render.sprite = bufferTransforms[2].gameObject.GetComponent<SpriteRenderer>().sprite;
-        }
-        if (type == 3)
-        {
-            render.sprite = bufferTransforms[3].gameObject.GetComponent<SpriteRenderer>().sprite;
-        }
-        if (type == 4)
-        {
-            render.sprite = bufferTransforms[4].gameObject.GetComponent<SpriteRenderer>().sprite;
-        }
-        if (type == 5)
-        {
-            render.sprite = bufferTransforms[5].gameObject.GetComponent<SpriteRenderer>().sprite;
-        }
-        render.drawMode = SpriteDrawMode.Sliced;
-        render.size= new Vector2(2, 1.75f);
 
 
+        int layer = sortingLayer;
+        switch (type)
+        {
+            case TypeTexture.Ground:
+                if (texture == 0)
+                {
+                    render.sprite = null;
+                }
+                if (texture == 1)
+                {
+                    render.sprite = bufferGrounds[1].gameObject.GetComponent<SpriteRenderer>().sprite;
+                }
+                if (texture == 2)
+                {
+                    render.sprite = bufferGrounds[2].gameObject.GetComponent<SpriteRenderer>().sprite;
+                }
+                if (texture == 3)
+                {
+                    render.sprite = bufferGrounds[3].gameObject.GetComponent<SpriteRenderer>().sprite;
+                }
+                if (texture == 4)
+                {
+                    render.sprite = bufferGrounds[4].gameObject.GetComponent<SpriteRenderer>().sprite;
+                }
+                if (texture == 5)
+                {
+                    render.sprite = bufferGrounds[5].gameObject.GetComponent<SpriteRenderer>().sprite;
+                }
+                
+                render.drawMode = SpriteDrawMode.Sliced;
+                render.size = new Vector2(2, 1.75f);
+                break;
 
-        render.sortingOrder = sortingLayer;//-(int)(transform.position.y * IsometricRangePerYUnit);
+            case TypeTexture.Tree:
+                if (texture == 0)
+                {
+                    layer += 5;
+                    render.sprite = bufferTrees[0].gameObject.GetComponent<SpriteRenderer>().sprite;
+                    render.drawMode = SpriteDrawMode.Sliced;
+                    render.size = new Vector2(4, 4);
+                }
+                break;
+        }
+
+        render.sortingOrder = layer;//-(int)(transform.position.y * IsometricRangePerYUnit);
         if (gameObjectsUsed == null)
         {
             gameObjectsUsed = new List<Transform>();
