@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
@@ -117,9 +118,7 @@ namespace MapGame
         private bool isDynamic = false;
         private BufferGraphic buffer;
 
-        public int _texture;
-
-        public Transform obj;
+        public List<Transform> objs;
 
         enum Type
         {
@@ -127,20 +126,23 @@ namespace MapGame
             DECORATION
         }
 
-        public Graphic(BufferGraphic buffer, Cell parent, int texture) : base(parent)
-        {
-        
+        public Graphic(BufferGraphic buffer, Cell parent) : base(parent)
+        {   
             this.buffer = buffer;
-            
-            _texture = texture;
-           
+            this._parent = parent;
+            this.objs = new List<Transform>();
+
+            AddObject(BufferGraphic.TypeTexture.Ground, this._parent.get_type());               
+        }
+
+        public void AddObject(BufferGraphic.TypeTexture type, int texture)
+        {
+
             Vector2 resultPos =
-                    convertTileCoordInScreenCoord((int)parent.position.x, (int) (parent.position.y)) +
-                    new Vector2(0, _parent.position.z);
-                Vector3 ScreenPos = new Vector3(resultPos.x, resultPos.y);
-                obj = buffer.AddGameObject(ScreenPos, _texture, parent.sortingLayer);
-
-
+                convertTileCoordInScreenCoord((int)this._parent.position.x, (int)(this._parent.position.y)) +
+                new Vector2(0, this._parent.position.z);
+            Vector3 ScreenPos = new Vector3(resultPos.x, resultPos.y);
+            objs.Add(buffer.AddGameObject(ScreenPos, type, texture, this._parent.sortingLayer));
         }
 
         public override void Init()
@@ -155,12 +157,15 @@ namespace MapGame
 
         public override void Remove()
         {
-            this._texture = 0;
-
             Vector2 resultPos = Vector2.zero;
-            buffer.RemoveObjectGraphic(obj);
+
+            foreach (var obj in objs)
+            {
+                buffer.RemoveObjectGraphic(obj);
+            }
+            objs = null;
             this.buffer = null;
-            obj = null;
+          
         }
 
         public override GameObject Draw()
@@ -227,34 +232,43 @@ namespace MapGame
 
     }
 
-    public class Plant : CellComponent
+    public class MTree : CellComponent
     {
-        public Color _color;
-        public Cell _parent;
-        public Graphic _render;
-
-        public Plant(Cell parent, Vector2 position, Vector2 dimension, Color color, Rect rect, Texture2D texture) : base(parent)
+        public int type;
+        public MTree(Cell parent, int type) : base(parent)
         {
-            _parent = parent;
-            _color = color;
-            
-           // _render = new Graphic(_parent, new ObjectTransform(position, dimension), rect, texture);
-        }
-
-        public void SetColor(Color color)
-        {
-            _color = color;
-        }
-
-        public override GameObject Draw()
-        {
-            GameObject plant = _render.Draw();
-            return plant;
-        }
-
-        public override void Clean()
-        {
-            _render.Clean();
+            this.type = type;
         }
     }
+
+    //public class Plant : CellComponent
+    //{
+    //    public Color _color;
+    //    public Cell _parent;
+    //    public Graphic _render;
+
+    //    public Plant(Cell parent, Vector2 position, Vector2 dimension, Color color, Rect rect, Texture2D texture) : base(parent)
+    //    {
+    //        _parent = parent;
+    //        _color = color;
+            
+    //       // _render = new Graphic(_parent, new ObjectTransform(position, dimension), rect, texture);
+    //    }
+
+    //    public void SetColor(Color color)
+    //    {
+    //        _color = color;
+    //    }
+
+    //    public override GameObject Draw()
+    //    {
+    //        GameObject plant = _render.Draw();
+    //        return plant;
+    //    }
+
+    //    public override void Clean()
+    //    {
+    //        _render.Clean();
+    //    }
+    //}
 }

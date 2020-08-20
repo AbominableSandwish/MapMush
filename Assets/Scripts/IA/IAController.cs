@@ -146,17 +146,17 @@ public class IAController : MonoBehaviour
 
                                         CalcNewPosition(this.indexPath);
 
-                                        //if (direction.x < 0)
-                                        //{
-                                        //    render.sortingOrder = celltarget.render.sortingOrder + 2;
-                                        //}
+                                        if (direction.x < 0)
+                                        {
+                                            render.sortingOrder = celltarget.sortingLayer + 2;
+                                        }
 
-                                        //if (direction.y < 0)
-                                        //{
-                                        //    render.sortingOrder = celltarget.render.sortingOrder + 2;
-                                        //}
+                                        if (direction.y < 0)
+                                        {
+                                            render.sortingOrder = celltarget.sortingLayer + 2;
+                                        }
 
-                                     //   pathUI = Ui.AddPath(path);
+                                        //   pathUI = Ui.AddPath(path);
 
                                         state = State.MOVE;
 
@@ -252,7 +252,7 @@ public class IAController : MonoBehaviour
             case State.ClIMB:
                 transform.position += new Vector3(0, height);
 
-                //render.sortingOrder = celltarget.render.sortingOrder + 2;
+                render.sortingOrder = celltarget.sortingLayer + 2;
 
                 height = 0.0f;
                 state = State.MOVE;

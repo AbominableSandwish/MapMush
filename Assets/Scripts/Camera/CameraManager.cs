@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using MapGame;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Tree = UnityEngine.Tree;
 using Vector3 = UnityEngine.Vector3;
 
 public class CameraManager : MonoBehaviour
 {
+    private Camera camera;
     public enum Mode
     {
         FREE,
@@ -27,22 +29,24 @@ public class CameraManager : MonoBehaviour
 
     private HashPartition hash;
 
-    public bool IsOn = false;
+    public bool IsOn = true;
     private Map map;
-    [SerializeField] private int max_bucket;
+    [SerializeField] private int max_bucket = 1536;
     private Bucket[,] buckets;
 
-    public List<Bucket> bucketsToLoad;
-    public List<Bucket> bucketsToDeload;
+    public Queue<Bucket> bucketsToLoad;
+    public Queue<Bucket> bucketsToDeload;
 
     public List<Bucket> bucketsVîsible;
 
-    private Vector2 direction;
+    private Vector2 direction = Vector2.zero;
 
-    [SerializeField] private float LengthVisibility;
+    [SerializeField] private float LengthVisibility = 30.0f;
 
     public void ResetView()
     {
+        camera = GetComponent<Camera>();
+
         bucketsVîsible = new List<Bucket>();
         buckets = this.hash.GetBuckets();
 
@@ -63,10 +67,11 @@ public class CameraManager : MonoBehaviour
 
     public BufferGraphic buffer;
     public void RestartCamera(BufferGraphic buffer)
+
     {
         bucketsVîsible = new List<Bucket>();
-        bucketsToLoad = new List<Bucket>();
-        bucketsToDeload = new List<Bucket>();
+        bucketsToLoad = new Queue<Bucket>();
+        bucketsToDeload = new Queue<Bucket>();
         if (IsOn)
         {
             this.buffer = buffer;
@@ -83,44 +88,40 @@ public class CameraManager : MonoBehaviour
 
     private IEnumerator Check()
     {
-        if (bucketsToLoad.Count > 0)
-        {
-            var bucket = bucketsToLoad[0];
-
-            foreach (var cell in bucket.cells)
-            {
-                cell.AddComponent(new Graphic(buffer, cell, cell.get_type()));
-            }
-
-            bucketsToLoad.Remove(bucket);
-            yield return new WaitForSeconds(0.1f);
-        }
 
         if (bucketsToDeload.Count > 0)
         {
-            var bucket = bucketsToDeload[0];
+            Bucket bucket = bucketsToDeload.Dequeue();
+            foreach (var cell in bucket.cells)
+            {
+                Graphic render = cell.GetComponent<Graphic>();
+                if (render != null)
+                    render.Remove();
+                Cell.Destroy(render);
+            }
+        }
+
+        if (bucketsToLoad.Count > 0)
+        {
+            var bucket = bucketsToLoad.Dequeue();
 
             foreach (var cell in bucket.cells)
             {
+                Graphic render = new Graphic(buffer, cell);
 
-                foreach (var component in cell._components)
+
+                MTree tree = cell.GetComponent<MTree>();
+                if (tree != null)
                 {
-                    if (component.GetType() == typeof(Graphic))
-                    {
-                        Graphic render = (Graphic)component;
-                        buffer.RemoveObjectGraphic(render.obj);
-                        Cell.Destroy(component);
-                    }
+                    render.AddObject(BufferGraphic.TypeTexture.Tree, tree.type);
                 }
+                cell.AddComponent(render);
             }
-
-           
-
-            bucketsToDeload.Remove(bucket);
-            yield return new WaitForSeconds(0.1f);
         }
 
-        yield return new WaitForSeconds(0.1f);
+     
+
+        yield return new WaitForSeconds(0.2f);
     }
 
     public void ShowBucket()
@@ -129,21 +130,7 @@ public class CameraManager : MonoBehaviour
 
         if (buckets != null)
         {
-            foreach (var bucket in this.bucketsVîsible)
-            { 
-                foreach (var cell in bucket.cells)
-                {
-                    foreach (var component in cell._components)
-                    {
-                        if (component.GetType() == typeof(Graphic))
-                        {
-                            Debug.Log("Component");
-                        }
-
-                    }
-                }
-
-            }
+            
         }
     }
 
@@ -284,46 +271,40 @@ public class CameraManager : MonoBehaviour
                 RestartCamera(buffer);
                 return;
             }
+             Vector3 positionCamera = this.transform.position + new Vector3(0, 0, 10);
 
-            StartCoroutine(Check());
-                distance = 0.0f;
-                Vector3 positionCamera = this.transform.position + new Vector3(0, 0, 10);
-
-                for (int x = 0; x < (int)Mathf.Sqrt(max_bucket); x++)
+            for (int x = 0; x < (int)Mathf.Sqrt(max_bucket); x++)
+            {
+                for (int y = 0; y < (int)Mathf.Sqrt(max_bucket); y++)
                 {
-                    for (int y = 0; y < (int)Mathf.Sqrt(max_bucket); y++)
-                    {
-                       
-                        Bucket bucket = this.buckets[x, y];
-                        Vector2 x_Axis = new Vector2(bucket.position.x - positionCamera.x, 0);
-                        if ((bucket.position - positionCamera).magnitude <= LengthVisibility &&
-                            (bucket.position - positionCamera).magnitude >= -LengthVisibility)
-                        {
-                            if (!bucket.IsVisible)
-                            {
-                                bucket.SetVisibilty(true);
-                                
-                                this.bucketsToLoad.Add(bucket);
-                            }
-                        }
-                        else
-                        {
-                            if (bucket.IsVisible)
-                            {
-                                bucket.SetVisibilty(false);
 
-                                this.bucketsToDeload.Add(bucket);
-                            }
+                    Bucket bucket = this.buckets[x, y];
+                    Vector2 x_Axis = new Vector2(bucket.position.x - positionCamera.x, 0);
+
+                    if ((bucket.position - positionCamera).magnitude <= LengthVisibility &&
+                        (bucket.position - positionCamera).magnitude >= -LengthVisibility)
+                    {
+                        if (!bucket.IsVisible)
+                        {
+                            bucket.SetVisibilty(true);
+
+                            this.bucketsToLoad.Enqueue(this.buckets[x, y]);
+                            StartCoroutine(Check());
+                        }
+                    }
+                    else
+                    {
+                        if (bucket.IsVisible)
+                        {
+                            bucket.SetVisibilty(false);
+
+                            this.bucketsToDeload.Enqueue(this.buckets[x, y]);
+                         
                         }
                     }
                 }
-
-                if (this.bucketsToLoad.Count + this.bucketsToDeload.Count > 0)
-                {
-                   
-                }
+            }
         }
-
     }
 
 
@@ -419,7 +400,8 @@ public class CameraManager : MonoBehaviour
             {
                 for (int y = 0; y < (int)(Mathf.Sqrt(max_bucket)); y++)
                 {
-
+                    float distX = (this.buckets[x, y].position.x - positionCamera.x) *2.0f;
+                    float disty = this.buckets[x, y].position.y - positionCamera.y;
                     if ((this.buckets[x, y].position - positionCamera).magnitude <= LengthVisibility &&
                         (this.buckets[x, y].position - positionCamera).magnitude >= -LengthVisibility)
                     {
